@@ -1,0 +1,25 @@
+[
+  {
+    "source": "Contact Form",
+    "name": "Prabhat Gautam",
+    "mobile": "1231234567",
+    "email": "test@gmail.com",
+    "location": "test",
+    "plotSize": "30x20",
+    "message": "hi this is test mail",
+    "id": "58b0c845-0f8d-4bd9-a86f-9296cf4cd931",
+    "createdAt": "2026-06-22T21:26:03.906Z",
+    "status": "New"
+  },
+  {
+    "source": "Enquiry Popup",
+    "name": "Preview QA",
+    "mobile": "9900000000",
+    "location": "RT Nagar",
+    "plotSize": "",
+    "message": "",
+    "id": "05a5de08-dfc7-40ba-b76c-b8b8baca193b",
+    "createdAt": "2026-06-22T20:45:45.402Z",
+    "status": "New"
+  }
+]

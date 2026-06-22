@@ -4,6 +4,8 @@ import "./premium.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { FloatingActions } from "@/components/FloatingActions";
+import { SiteExperience } from "@/components/SiteExperience";
+import { EnquiryPopup } from "@/components/EnquiryPopup";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://rsconstruction.in"),
@@ -11,6 +13,7 @@ export const metadata: Metadata = {
   description: "Premium residential and commercial construction, architecture, interiors and turnkey project delivery in Bengaluru.",
   openGraph: { title: "RS Construction", description: "Building Excellence. Delivering Trust.", type: "website", images: ["/images/hero-villa.png"] },
   twitter: { card: "summary_large_image" },
+  icons: { icon: "/icon.svg", shortcut: "/icon.svg", apple: "/icon.svg" },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
@@ -22,11 +25,14 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     areaServed: "Bengaluru, Karnataka",
     telephone: ["+919901567272", "+919740177666"],
     email: "rsconstruction2027@gmail.com",
-    address: { "@type": "PostalAddress", addressLocality: "Bengaluru", addressRegion: "Karnataka", addressCountry: "IN" },
+    address: { "@type": "PostalAddress", streetAddress: "14, 1st Main Rd, opp. Indian Oil Petrol Bunk, Rahmath Nagar, RT Nagar", addressLocality: "Bengaluru", addressRegion: "Karnataka", postalCode: "560032", addressCountry: "IN" },
+    hasMap: "https://share.google/YoghYTG0lBF0TiA2O",
   };
   return (
     <html lang="en">
       <body>
+        <SiteExperience />
+        <EnquiryPopup />
         <Header />
         <main>{children}</main>
         <Footer />

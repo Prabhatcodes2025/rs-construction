@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { Reveal } from "@/components/Reveal";
 import { Estimator } from "@/components/Estimator";
+import { VideoTestimonial } from "@/components/VideoTestimonial";
 
 const strengths = [
   [ShieldCheck, "Quality assured", "Stage-wise quality checks and accountable supervision."],
@@ -47,7 +48,7 @@ export default function Home() {
             <h1>Building dreams.<br /><em>Delivering excellence.</em></h1>
             <p>Thoughtful design, precise execution and complete transparency—from the first sketch to the final key.</p>
             <div className="hero-actions"><Link className="button primary" href="/contact">Get free estimate <ArrowRight size={18} /></Link><Link className="button dark" href="/contact">Schedule consultation</Link></div>
-            <Link className="hero-project-link" href="/projects"><Play size={14} fill="currentColor" /> Explore completed and live projects</Link>
+            <Link className="hero-project-link" href="/projects"><Play size={14} fill="currentColor" /> Explore ongoing and completed projects</Link>
           </Reveal>
           <div className="hero-rail">
             {[[House, "Custom homes"], [Building2, "Commercial spaces"], [ShieldCheck, "Quality construction"], [Clock3, "On-time delivery"]].map(([Icon, item], i) => <div key={item as string}><span><Icon /></span><small>0{i + 1}</small><strong>{item as string}</strong></div>)}
@@ -63,14 +64,14 @@ export default function Home() {
       <section className="section blueprint">
         <div className="shell">
           <Reveal className="section-heading"><span className="eyebrow">The RS standard</span><h2>Confidence, built into<br />every square foot.</h2><p>Premium construction is not just a finish. It is a disciplined process where every detail is planned, tracked and verified.</p></Reveal>
-          <div className="strength-grid">{strengths.map(([Icon, title, copy]) => <Reveal className="strength-card" key={title as string}><span className="icon-box"><Icon /></span><h3>{title as string}</h3><p>{copy as string}</p><span className="card-index">RS / 0{strengths.findIndex(x => x[1] === title) + 1}</span></Reveal>)}</div>
+          <div className="strength-grid">{strengths.map(([Icon, title, copy], i) => <Reveal delay={i * .055} className="strength-card" key={title as string}><span className="icon-box"><Icon /></span><h3>{title as string}</h3><p>{copy as string}</p><span className="card-index">RS / 0{strengths.findIndex(x => x[1] === title) + 1}</span></Reveal>)}</div>
         </div>
       </section>
 
       <section className="section dark-section">
         <div className="shell">
           <Reveal className="section-heading split"><div><span className="eyebrow light">Construction packages</span><h2>Specifications for<br />every ambition.</h2></div><p>Four clear starting points. Every package can be tailored around your site, lifestyle and architectural goals.</p></Reveal>
-          <div className="package-grid">{packages.map(([id, name, price, copy, features], i) => <Reveal className={`package-card ${i === 2 ? "featured" : ""}`} key={name as string}><span className="package-id">{id as string}</span>{i === 2 && <span className="popular">Most preferred</span>}<h3>{name as string}</h3><p>{copy as string}</p><div className="price"><small>From</small><strong>₹{price as string}</strong><span>/ sq.ft</span></div><ul>{(features as string[]).map(f => <li key={f}><Check size={15} />{f}</li>)}</ul><Link href="/packages">View specification <ArrowRight size={16} /></Link></Reveal>)}</div>
+          <div className="package-grid">{packages.map(([id, name, price, copy, features], i) => <Reveal delay={i * .07} className={`package-card ${i === 2 ? "featured" : ""}`} key={name as string}><span className="package-id">{id as string}</span>{i === 2 && <span className="popular">Most preferred</span>}<h3>{name as string}</h3><p>{copy as string}</p><div className="price"><small>From</small><strong>₹{price as string}</strong><span>/ sq.ft</span></div><ul>{(features as string[]).map(f => <li key={f}><Check size={15} />{f}</li>)}</ul><div className="package-links"><Link href="/packages">View specification <ArrowRight size={16} /></Link><Link href="/contact">Enquire now</Link></div></Reveal>)}</div>
         </div>
       </section>
 
@@ -84,7 +85,7 @@ export default function Home() {
       <section className="section process-section">
         <div className="shell">
           <Reveal className="section-heading centered"><span className="eyebrow">Our process</span><h2>Seven stages. One accountable team.</h2><p>A transparent path that keeps design, budget, quality and timelines moving together.</p></Reveal>
-          <div className="process-line">{process.map((item, i) => <Reveal className="process-step" key={item}><span>{String(i + 1).padStart(2, "0")}</span><div className="process-dot" /><strong>{item}</strong></Reveal>)}</div>
+          <div className="process-line">{process.map((item, i) => <Reveal delay={i * .06} className="process-step" key={item}><span>{String(i + 1).padStart(2, "0")}</span><div className="process-dot" /><strong>{item}</strong></Reveal>)}</div>
         </div>
       </section>
 
@@ -105,7 +106,7 @@ export default function Home() {
       <section className="section projects-section">
         <div className="shell">
           <Reveal className="section-heading split"><div><span className="eyebrow light">Selected projects</span><h2>Built with intent.<br />Finished with pride.</h2></div><Link className="text-link light-link" href="/projects">View all projects <ArrowRight size={17} /></Link></Reveal>
-          <div className="project-grid">{projects.map(project => <Reveal className="project-card" key={project.name}><div className="project-image"><Image src={project.image} alt={project.name} fill sizes="(max-width: 800px) 100vw, 33vw" /><span>{project.type}</span></div><div className="project-info"><h3>{project.name}</h3><p>{project.place} · {project.area}</p><div className="progress"><i style={{ width: `${project.progress}%` }} /></div><small>{project.progress}% complete</small></div></Reveal>)}</div>
+          <div className="project-grid">{projects.map((project, i) => <Reveal delay={i * .08} className="project-card" key={project.name}><div className="project-image"><Image src={project.image} alt={project.name} fill sizes="(max-width: 800px) 100vw, 33vw" /><span>{project.type}</span></div><div className="project-info"><h3>{project.name}</h3><p>{project.place} · {project.area}</p><div className="progress"><i style={{ width: `${project.progress}%` }} /></div><div className="project-meta"><small>{project.progress}% complete</small><Link href="/contact">Enquire <ArrowRight size={14} /></Link></div></div></Reveal>)}</div>
         </div>
       </section>
 
@@ -119,7 +120,7 @@ export default function Home() {
       <section className="section testimonials">
         <div className="shell">
           <Reveal className="section-heading centered"><span className="eyebrow">Client stories</span><h2>Trust is our most important handover.</h2></Reveal>
-          <div className="testimonial-grid"><Reveal className="video-placeholder"><Image src="/images/project-residence.png" alt="Customer testimonial placeholder" fill sizes="(max-width: 800px) 100vw, 50vw" /><button aria-label="Play testimonial"><Play fill="currentColor" /></button><div><span>Customer story</span><strong>A home built without the usual uncertainty.</strong></div></Reveal><Reveal className="testimonial-quote"><div className="stars">★★★★★</div><blockquote>“The team was open about every stage—from material selections to weekly progress. That clarity made the entire experience feel manageable and professional.”</blockquote><strong>Homeowner · Bengaluru</strong><p>Residential construction</p></Reveal></div>
+          <div className="testimonial-grid"><Reveal><VideoTestimonial /></Reveal><Reveal className="testimonial-quote"><div className="stars">★★★★★</div><blockquote>“The team was open about every stage—from material selections to weekly progress. That clarity made the entire experience feel manageable and professional.”</blockquote><strong>Homeowner · Bengaluru</strong><p>Residential construction</p></Reveal></div>
         </div>
       </section>
 

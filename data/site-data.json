@@ -1,0 +1,165 @@
+{
+  "projects": [
+    {
+      "id": "p1",
+      "image": "/images/project-commercial.png",
+      "category": "Ongoing",
+      "title": "Urban Work Studios",
+      "location": "Whitefield, Bengaluru",
+      "type": "Commercial",
+      "area": "12,600 sq.ft",
+      "status": "72% complete"
+    },
+    {
+      "id": "p2",
+      "image": "/images/hero-villa.png",
+      "category": "Ongoing",
+      "title": "Aster Villa",
+      "location": "Sarjapur, Bengaluru",
+      "type": "Residential",
+      "area": "3,950 sq.ft",
+      "status": "48% complete"
+    },
+    {
+      "id": "p3",
+      "image": "/images/project-residence.png",
+      "category": "Completed",
+      "title": "The Courtyard House",
+      "location": "JP Nagar, Bengaluru",
+      "type": "Residential",
+      "area": "4,800 sq.ft",
+      "status": "Completed"
+    },
+    {
+      "id": "p4",
+      "image": "/images/hero-villa.png",
+      "category": "Completed",
+      "title": "House of Light",
+      "location": "Yelahanka, Bengaluru",
+      "type": "Residential",
+      "area": "5,400 sq.ft",
+      "status": "Completed"
+    }
+  ],
+  "packages": [
+    {
+      "id": "basic",
+      "name": "Basic",
+      "price": "₹1,940",
+      "label": "Essential",
+      "bestFor": "Budget-conscious first homes",
+      "features": {
+        "Steel": "Kamdhenu",
+        "Windows": "Aluminium",
+        "Flooring": "₹50/sft",
+        "Paint": "Tractor",
+        "Electrical": "Standard"
+      }
+    },
+    {
+      "id": "classic",
+      "name": "Classic",
+      "price": "₹2,070",
+      "label": "Enhanced",
+      "bestFor": "Balanced modern family homes",
+      "features": {
+        "Steel": "Indus",
+        "Windows": "UPVC",
+        "Flooring": "₹100/sft",
+        "Paint": "Tractor Shyne",
+        "Electrical": "Premium"
+      }
+    },
+    {
+      "id": "premium",
+      "name": "Premium",
+      "price": "₹2,400",
+      "label": "Best value",
+      "bestFor": "Premium homes with refined finishes",
+      "features": {
+        "Steel": "Indus",
+        "Windows": "Premium UPVC",
+        "Flooring": "₹140/sft",
+        "Paint": "Apcolite",
+        "Electrical": "Premium+"
+      }
+    },
+    {
+      "id": "royale",
+      "name": "Royale",
+      "price": "₹2,640",
+      "label": "Luxury",
+      "bestFor": "Bespoke luxury residences",
+      "features": {
+        "Steel": "Indus",
+        "Windows": "Luxury UPVC",
+        "Flooring": "₹160/sft",
+        "Paint": "Royale Luxury",
+        "Electrical": "Luxury"
+      }
+    }
+  ],
+  "testimonials": [
+    {
+      "id": "t1",
+      "name": "Homeowner",
+      "location": "Bengaluru",
+      "quote": "The team was open about every stage—from material selections to weekly progress.",
+      "rating": 5
+    }
+  ],
+  "services": [
+    {
+      "id": "s1",
+      "name": "Residential Construction"
+    },
+    {
+      "id": "s2",
+      "name": "Commercial Construction"
+    },
+    {
+      "id": "s3",
+      "name": "Architecture"
+    },
+    {
+      "id": "s4",
+      "name": "Interior Design"
+    }
+  ],
+  "team": [
+    {
+      "id": "m1",
+      "name": "M. Shankar",
+      "role": "Founder & Managing Director",
+      "image": "/images/founder-message.png"
+    },
+    {
+      "id": "m2",
+      "name": "Rakesh R",
+      "role": "General Manager — Operations & Business Development",
+      "image": "/images/rakesh-profile.png"
+    }
+  ],
+  "hero": {
+    "image": "/images/hero-villa.png",
+    "headline": "Building dreams. Delivering excellence."
+  },
+  "gallery": [
+    "/images/project-residence.png",
+    "/images/project-commercial.png",
+    "/images/hero-villa.png"
+  ],
+  "settings": {
+    "phone": "+91 99015 67272",
+    "email": "rsconstruction2027@gmail.com",
+    "address": "14, 1st Main Rd, opp. Indian Oil Petrol Bunk, Rahmath Nagar, RT Nagar, Bengaluru, Karnataka 560032",
+    "map": "https://share.google/YoghYTG0lBF0TiA2O",
+    "social": {
+      "whatsapp": "https://wa.me/919901567272"
+    }
+  },
+  "seo": {
+    "homeTitle": "RS Construction | Premium Home Builders in Bengaluru",
+    "homeDescription": "Premium residential and commercial construction, architecture, interiors and turnkey project delivery in Bengaluru."
+  }
+}

@@ -1,0 +1,52 @@
+"use client";
+
+import { CaptchaField } from "./CaptchaField";
+import { AnimatePresence, motion } from "framer-motion";
+import { CheckCircle2, Clock3, IndianRupee, ShieldCheck, X } from "lucide-react";
+import Image from "next/image";
+import { FormEvent, useCallback, useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
+
+export function EnquiryPopup() {
+  const [open, setOpen] = useState(false);
+  const [sent, setSent] = useState(false);
+  const [captcha, setCaptcha] = useState("");
+  const [error, setError] = useState("");
+  const pathname = usePathname();
+  const verify = useCallback((token: string) => setCaptcha(token), []);
+
+  useEffect(() => {
+    if (pathname.startsWith("/admin")) return;
+    const click = (event: MouseEvent) => {
+      const link = (event.target as HTMLElement).closest<HTMLAnchorElement>("a");
+      const text = link?.textContent?.toLowerCase() || "";
+      if (link && link.getAttribute("href")?.startsWith("/contact") && /estimate|consultation|enquire|quote|get in touch/.test(text)) { event.preventDefault(); setOpen(true); }
+    };
+    document.addEventListener("click", click);
+    const closed = sessionStorage.getItem("rs-popup-closed");
+    const timer = !closed ? window.setTimeout(() => setOpen(true), 9000) : 0;
+    return () => { document.removeEventListener("click", click); if (timer) clearTimeout(timer); };
+  }, [pathname]);
+
+  function close() { setOpen(false); sessionStorage.setItem("rs-popup-closed", "1"); }
+  async function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault(); setError("");
+    const form = new FormData(event.currentTarget);
+    const response = await fetch("/api/leads", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ source: "Enquiry Popup", name: form.get("name"), mobile: form.get("mobile"), location: form.get("location"), plotSize: form.get("plotSize"), service: form.get("service"), message: form.get("message"), captchaToken: captcha }) });
+    const result = await response.json();
+    if (!response.ok) return setError(result.error || "Please check the form.");
+    setSent(true); sessionStorage.setItem("rs-popup-closed", "1");
+  }
+
+  return <AnimatePresence>{open && <motion.div className="enquiry-backdrop" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onMouseDown={e => e.target === e.currentTarget && close()}>
+    <motion.div className="enquiry-modal" initial={{ opacity: 0, y: 35, scale: .96 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 20, scale: .97 }} transition={{ type: "spring", damping: 24, stiffness: 260 }}>
+      <button className="enquiry-close" aria-label="Close enquiry form" onClick={close}><X /></button>
+      <div className="enquiry-visual"><Image src="/images/hero-villa.png" alt="Contemporary villa by RS Construction" fill sizes="360px" /><div><span>18+ years of construction expertise</span><h3>Your vision.<br />One accountable team.</h3><p>14, 1st Main Rd, RT Nagar, Bengaluru 560032</p></div></div>
+      <div className="enquiry-content">{sent ? <div className="enquiry-success"><CheckCircle2 /><h2>Thank you.</h2><p>Our construction expert will contact you shortly.</p><button className="button dark" onClick={close}>Continue browsing</button></div> : <>
+        <span className="eyebrow">Free expert consultation</span><h2>Build your dream home with RS Construction</h2><p>Get transparent pricing and end-to-end construction support in Bengaluru.</p>
+        <form onSubmit={submit}><div className="popup-fields"><input required name="name" placeholder="Full Name*" /><input required name="mobile" type="tel" placeholder="Mobile Number*" /><input required name="location" placeholder="Plot Location*" /><input name="plotSize" placeholder="Plot Size" /><select name="service" defaultValue=""><option value="" disabled>Service Required</option><option>Residential Construction</option><option>Commercial Construction</option><option>Architecture</option><option>Interior Design</option><option>Turnkey Construction</option></select><textarea name="message" rows={2} placeholder="Message (optional)" /></div><CaptchaField onVerify={verify} />{error && <p className="form-error">{error}</p>}<button className="button primary popup-submit" type="submit">Start your construction journey</button></form>
+        <div className="popup-trust"><span><ShieldCheck />Quality construction</span><span><IndianRupee />Transparent pricing</span><span><Clock3 />On-time delivery</span></div>
+      </>}</div>
+    </motion.div>
+  </motion.div>}</AnimatePresence>;
+}
