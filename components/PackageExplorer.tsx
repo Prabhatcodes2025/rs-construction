@@ -1,10 +1,9 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { Check, ChevronLeft, ChevronRight, MessageSquareText, Minus, Plus, X } from "lucide-react";
+import { Check, MessageSquareText, Minus, Plus, X } from "lucide-react";
 import Link from "next/link";
-import type { CSSProperties } from "react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 const cities = ["Bengaluru", "Mysuru", "Chennai", "Hyderabad", "Pune"];
 const categories = ["Structure", "Kitchen", "Bathroom", "Doors & Windows", "Painting", "Flooring", "Electrical", "Miscellaneous"];
@@ -65,10 +64,9 @@ function normalizedDetails(item: PackageItem) {
 
 export function PackageExplorer() {
   const [city, setCity] = useState("Bengaluru");
-  const [selected, setSelected] = useState(0);
+  const [activePackage, setActivePackage] = useState(0);
   const [packages, setPackages] = useState<PackageItem[]>(fallbackPackages);
   const [whyUs, setWhyUs] = useState<WhyRow[]>(fallbackWhyUs);
-  const rail = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     fetch("/api/content").then(response => response.json()).then(data => {
@@ -83,15 +81,12 @@ export function PackageExplorer() {
   const visibleWhyUs = useMemo(() => whyUs
     .filter(item => item.active !== false)
     .sort((a, b) => Number(a.displayOrder || 0) - Number(b.displayOrder || 0)), [whyUs]);
-  const selectedPackage = visiblePackages[selected] || visiblePackages[0];
+  const selectedPackage = visiblePackages[activePackage] || visiblePackages[0];
+  const progressPosition = visiblePackages.length > 1 ? activePackage / (visiblePackages.length - 1) * 100 : 0;
 
   useEffect(() => {
-    if (selected >= visiblePackages.length) setSelected(0);
-  }, [selected, visiblePackages.length]);
-
-  function scroll(direction: number) {
-    rail.current?.scrollBy({ left: direction * Math.max(300, rail.current.clientWidth * .82), behavior: "smooth" });
-  }
+    if (activePackage >= visiblePackages.length) setActivePackage(0);
+  }, [activePackage, visiblePackages.length]);
 
   return <div className="packages-experience">
     <div className="packages-intro">
@@ -101,31 +96,25 @@ export function PackageExplorer() {
       <label>Currently showing for <select value={city} onChange={event => setCity(event.target.value)}>{cities.map(item => <option key={item}>{item}</option>)}</select></label>
     </div>
 
-    <div className="mobile-package-navigation" role="tablist" aria-label="Choose a construction package">
-      <div className="mobile-package-tabs">
-        {visiblePackages.map((item, index) => <button role="tab" aria-selected={selected === index} className={selected === index ? "active" : ""} onClick={() => setSelected(index)} key={item.id || item.name}>{item.name}</button>)}
+    <div className="package-navigation">
+      <div className="package-tabs" role="tablist" aria-label="Choose a construction package">
+        {visiblePackages.map((item, index) => <button role="tab" aria-selected={activePackage === index} className={activePackage === index ? "active" : ""} onClick={() => setActivePackage(index)} key={item.id || item.name}>{item.name}</button>)}
       </div>
-      <div className="package-stepper" style={{ "--package-progress": `${visiblePackages.length > 1 ? selected / (visiblePackages.length - 1) * 100 : 0}%` } as CSSProperties}>
-        <i className="package-step-line" />
-        <i className="package-step-progress" />
-        {visiblePackages.map((item, index) => <span style={{ left: `${visiblePackages.length > 1 ? index / (visiblePackages.length - 1) * 100 : 0}%` }} className={selected === index ? "active" : selected > index ? "complete" : ""} key={item.id || item.name} />)}
+      <div className="package-progress">
+        <div className="package-progress-track">
+          <i className="package-progress-line" />
+          {visiblePackages.map((item, index) => <span className="package-progress-marker" style={{ left: `${visiblePackages.length > 1 ? index / (visiblePackages.length - 1) * 100 : 0}%` }} key={item.id || item.name} />)}
+          <span className="package-progress-active" style={{ left: `${progressPosition}%` }} />
+        </div>
       </div>
     </div>
 
-    <div className="mobile-selected-package">
+    <div className="selected-package">
       <AnimatePresence mode="wait">
         {selectedPackage && <motion.div key={`${city}-${selectedPackage.id || selectedPackage.name}`} initial={{ opacity: 0, x: 22 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -22 }} transition={{ duration: .25 }}>
           <PackageCard item={selectedPackage} />
         </motion.div>}
       </AnimatePresence>
-    </div>
-
-    <div className="package-rail-wrap">
-      <button className="package-rail-arrow previous" aria-label="Previous packages" onClick={() => scroll(-1)}><ChevronLeft /></button>
-      <div className="package-card-rail" ref={rail}>
-        {visiblePackages.map(item => <PackageCard item={item} key={item.id || item.name} />)}
-      </div>
-      <button className="package-rail-arrow next" aria-label="Next packages" onClick={() => scroll(1)}><ChevronRight /></button>
     </div>
     <small className="package-terms">*T&amp;C Apply</small>
 
