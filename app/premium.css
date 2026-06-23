@@ -556,9 +556,9 @@ p{font-size:15px;line-height:1.8}
 .contact-details .address-card{align-items:flex-start}.contact-details .address-card span{line-height:1.65}
 .map-placeholder{min-height:180px;text-align:center}.map-placeholder:hover{border-color:var(--orange);background:#0c1c2d}
 
-.portrait-panel img,.executive-grid article img{object-fit:cover;object-position:center top}
-.executive-grid article>div{aspect-ratio:4/5;height:auto;min-height:560px}
-.portrait-panel{aspect-ratio:4/5;min-height:0}
+.portrait-panel img,.executive-grid article img{object-fit:contain;object-position:center top}
+.executive-grid article>div{aspect-ratio:1054/1492;height:auto;min-height:560px;background:#fff}
+.portrait-panel{aspect-ratio:1054/1492;min-height:0;background:#fff}
 
 @media(max-width:1100px){
   .mobile-quick-actions{display:flex}
@@ -573,7 +573,7 @@ p{font-size:15px;line-height:1.8}
   .package-selector{grid-template-columns:1fr 1fr}.package-detail-head{grid-template-columns:1fr;padding:36px}.package-detail-head>div:last-child{text-align:left}
   .feature-breakdown{grid-template-columns:1fr 1fr;padding:20px}.feature-breakdown>div{border-bottom:1px solid var(--line)}
   .package-compare-cards{grid-template-columns:1fr 1fr}
-  .editorial-grid{align-items:start}.portrait-panel{aspect-ratio:3/4;min-height:0}.executive-grid article>div{min-height:0;aspect-ratio:4/5}
+  .editorial-grid{align-items:start}.portrait-panel{aspect-ratio:1054/1492;min-height:0}.executive-grid article>div{min-height:0;aspect-ratio:1054/1492}
 }
 @media(max-width:640px){
   .mobile-quick-actions a{width:36px;height:36px}.menu-btn{width:40px;height:40px}.nav-shell{gap:4px}
@@ -581,7 +581,7 @@ p{font-size:15px;line-height:1.8}
   .feature-breakdown{grid-template-columns:1fr}.feature-breakdown>div{border-right:0;padding:18px 8px}
   .package-detail-actions{padding:20px;display:grid}.package-detail-actions .button{width:100%}
   .package-compare-cards{grid-template-columns:1fr}.package-compare-cards article.best-value{transform:none}
-  .portrait-panel{aspect-ratio:3/4}.executive-grid article>div{aspect-ratio:3/4}.team-placeholder-grid{grid-template-columns:1fr}
+  .portrait-panel{aspect-ratio:1054/1492}.executive-grid article>div{aspect-ratio:1054/1492}.team-placeholder-grid{grid-template-columns:1fr}
   .achievement-row>div{padding:22px 16px}.achievement-row strong{font-size:35px}.achievement-row span{font-size:9px}
 }
 
@@ -863,3 +863,36 @@ body:has(.admin-app),body:has(.admin-login-page){background:#f1f4f7}
   .comparison-result svg{width:18px;height:18px}
   .logo-mark{width:54px;height:34px;flex-basis:54px}
 }
+
+/* Focused mobile image recovery for portrait/poster assets */
+@media(max-width:900px){
+  .founder-image,.portrait-panel{min-height:0!important;height:auto;aspect-ratio:1054/1492;background:#fff}
+  .founder-image img,.portrait-panel img{object-fit:contain!important;object-position:center top!important;transform:none!important}
+
+  .leader-card{min-height:0!important;height:auto;overflow:hidden;background:#fff}
+  .leader-card>img{position:relative!important;inset:auto!important;width:100%!important;height:auto!important;aspect-ratio:1054/1492;object-fit:contain!important;object-position:center top!important;transform:none!important}
+  .leader-card:before{display:none}
+  .leader-overlay{position:relative;padding:22px 20px 24px;background:var(--navy)}
+  .leader-overlay h3{font-size:32px;margin:5px 0}.leader-overlay p{font-size:13px;line-height:1.5}
+
+  .executive-grid article{padding:10px 10px 23px}
+  .executive-grid article>div{height:auto!important;min-height:0!important;aspect-ratio:1054/1492;background:#fff}
+  .executive-grid article>div img{object-fit:contain!important;object-position:center top!important;transform:none!important}
+  .executive-grid article>span{margin-top:17px;font-size:9px;line-height:1.45}
+  .executive-grid article h2{margin-top:7px;font-size:29px;line-height:1.05}
+  .executive-grid article p{margin-bottom:0;font-size:12px;line-height:1.65}
+
+  .hero-image{object-position:center center!important}
+  .portfolio-grid article>div.portfolio-image{aspect-ratio:4/3!important}
+  .portfolio-grid article img{object-fit:cover;object-position:center center}
+
+  body:has(.executive-grid) .floating-actions{position:static;display:flex;flex-direction:row;justify-content:center;gap:10px;padding:18px;background:#f4f7f9}
+  body:has(.executive-grid) .floating-actions a{width:46px;height:46px}
+  body:has(.leader-card) .floating-actions{bottom:18px;right:8px}
+  body:has(.leader-card) .floating-actions a{width:42px;height:42px}
+
+  .stats-grid strong{font-size:clamp(23px,8vw,31px);overflow-wrap:anywhere}
+  .achievement-row strong{font-size:clamp(25px,9vw,35px);overflow-wrap:anywhere}
+}
+
+html,body{max-width:100%;overflow-x:clip}

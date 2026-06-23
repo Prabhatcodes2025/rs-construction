@@ -21,6 +21,6 @@ export default function About() {
       </Reveal>
       <Reveal className="portrait-panel"><Image src="/images/founder-message.png" alt="Founder M. Shankar" fill sizes="(max-width: 800px) 100vw, 42vw" /></Reveal>
     </div></section>
-    <section className="section dark-section"><div className="shell achievement-row">{[["18+", "Years of field experience"], ["100+", "Projects delivered"], ["98%", "Client satisfaction"], ["01", "Accountable delivery team"]].map(item => <div key={item[1]}><Award /><strong>{item[0]}</strong><span>{item[1]}</span></div>)}</div></section>
+    <section className="section dark-section"><div className="shell achievement-row">{[["4+", "Years of field experience"], ["5+", "Projects delivered"], ["Stage-wise", "Quality process"], ["01", "Accountable delivery team"]].map(item => <div key={item[1]}><Award /><strong>{item[0]}</strong><span>{item[1]}</span></div>)}</div></section>
   </>;
 }

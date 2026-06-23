@@ -95,7 +95,7 @@ export default async function Home() {
       </section>
 
       <section className="trust-strip">
-        <div className="shell stats-grid">{[["18+", "Years of experience"], ["100+", "Projects delivered"], ["100%", "Process transparency"], ["98%", "Client satisfaction"]].map(([number, label]) => <div key={label}><strong>{number}</strong><span>{label}</span></div>)}</div>
+        <div className="shell stats-grid">{[["4+", "Years of experience"], ["5+", "Projects delivered"], ["Stage-wise", "Quality process"], ["01", "Accountable delivery team"]].map(([number, label]) => <div key={label}><strong>{number}</strong><span>{label}</span></div>)}</div>
       </section>
 
       <section className="section blueprint">
