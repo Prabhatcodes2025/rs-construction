@@ -4,7 +4,7 @@ import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { FormEvent, useState } from "react";
 import { CaptchaField } from "./CaptchaField";
 
-export function LeadForm() {
+export function LeadForm({ recaptcha = false }: { recaptcha?: boolean }) {
   const [sent, setSent] = useState(false);
   const [captcha, setCaptcha] = useState("");
   const [error, setError] = useState("");
@@ -36,7 +36,7 @@ export function LeadForm() {
       <div><label>Email<input name="email" autoComplete="email" type="email" placeholder="you@example.com" /></label><label>Plot location<input name="location" placeholder="Area, Bengaluru" /></label></div>
       <label>Plot size<input name="plotSize" placeholder="e.g. 30 × 40 or 1,200 sq.ft" /></label>
       <label>Tell us about your project<textarea name="message" rows={5} placeholder="Home, commercial space, interiors, preferred timeline..." /></label>
-      <CaptchaField onVerify={setCaptcha} />
+      <CaptchaField enabled={recaptcha} onVerify={setCaptcha} />
       {error && <p className="form-error">{error}</p>}
       <button className="button primary form-submit" type="submit">Request a consultation <ArrowRight size={18} /></button>
       <small>By submitting, you agree to be contacted by RS Construction about your inquiry.</small>

@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import type { Metadata } from "next";
 import {
   ArrowRight, Award, BadgeCheck, Building2, Check, CircleDollarSign, Clock3,
   DraftingCompass, HardHat, HeartHandshake, House, Layers3, MessageCircle, Play,
@@ -8,6 +9,7 @@ import {
 import { Reveal } from "@/components/Reveal";
 import { Estimator } from "@/components/Estimator";
 import { VideoTestimonial } from "@/components/VideoTestimonial";
+import { getSiteData } from "@/lib/store";
 
 const strengths = [
   [ShieldCheck, "Quality assured", "Stage-wise quality checks and accountable supervision."],
@@ -26,18 +28,38 @@ const packages = [
   ["04", "Royale", "2,640", "Statement homes with luxury-grade specifications.", ["Luxury stone finishes", "Smart home readiness", "Bespoke interior detailing"]],
 ];
 const process = ["Consultation", "Planning", "Design", "Approvals", "Construction", "Quality inspection", "Handover"];
-const projects = [
+const fallbackProjects = [
   { image: "/images/project-residence.png", type: "Completed residence", name: "The Courtyard House", place: "JP Nagar, Bengaluru", area: "4,800 sq.ft", progress: 100 },
   { image: "/images/project-commercial.png", type: "Ongoing commercial", name: "Urban Work Studios", place: "Whitefield, Bengaluru", area: "12,600 sq.ft", progress: 72 },
-  { image: "/images/hero-villa.png", type: "Live project", name: "Aster Villa", place: "Sarjapur, Bengaluru", area: "3,950 sq.ft", progress: 48 },
+  { image: "/images/hero-villa.png", type: "Ongoing residence", name: "Aster Villa", place: "Sarjapur, Bengaluru", area: "3,950 sq.ft", progress: 48 },
 ];
 
-export default function Home() {
+export async function generateMetadata(): Promise<Metadata> {
+  const data = await getSiteData();
+  const seo = (data.seo || {}) as Record<string, string>;
+  return {
+    title: seo.homeTitle || "RS Construction | Premium Home Builders in Bengaluru",
+    description: seo.homeDescription || "Premium residential and commercial construction, architecture, interiors and turnkey project delivery in Bengaluru.",
+  };
+}
+
+export default async function Home() {
+  const data = await getSiteData();
+  const hero = (data.hero || {}) as Record<string, string>;
+  const dynamicProjects = Array.isArray(data.projects) ? (data.projects as Array<Record<string, unknown>>).slice(0, 3).map(project => ({
+    image: String(project.image || "/images/project-residence.png"),
+    type: `${String(project.category || "Ongoing")} ${String(project.type || "project").toLowerCase()}`,
+    name: String(project.title || "RS Construction project"),
+    place: String(project.location || "Bengaluru"),
+    area: String(project.area || ""),
+    progress: Number(project.completion ?? (String(project.category) === "Completed" ? 100 : parseInt(String(project.status)) || 0)),
+  })) : fallbackProjects;
+  const projects = dynamicProjects.length ? dynamicProjects : fallbackProjects;
   return (
     <>
       <section className="hero">
         <div className="hero-visual">
-          <Image src="/images/hero-villa.png" alt="Luxury contemporary villa by RS Construction" fill priority sizes="(max-width: 900px) 100vw, 52vw" className="hero-image" />
+          <Image src={hero.image || "/images/hero-villa.png"} alt="Luxury contemporary villa by RS Construction" fill priority sizes="(max-width: 900px) 100vw, 52vw" className="hero-image" />
           <div className="hero-image-shade" />
           <div className="hero-visual-label"><span>Featured build</span><strong>Contemporary residence</strong><small>Bengaluru, Karnataka</small></div>
         </div>
@@ -45,8 +67,8 @@ export default function Home() {
           <div className="hero-draft-lines" />
           <Reveal className="hero-copy">
             <span className="eyebrow">Premium construction · Bengaluru</span>
-            <h1>Building dreams.<br /><em>Delivering excellence.</em></h1>
-            <p>Thoughtful design, precise execution and complete transparency—from the first sketch to the final key.</p>
+            <h1>{hero.headline || "Building dreams. Delivering excellence."}</h1>
+            <p>{hero.subheadline || "Thoughtful design, precise execution and complete transparency—from the first sketch to the final key."}</p>
             <div className="hero-actions"><Link className="button primary" href="/contact">Get free estimate <ArrowRight size={18} /></Link><Link className="button dark" href="/contact">Schedule consultation</Link></div>
             <Link className="hero-project-link" href="/projects"><Play size={14} fill="currentColor" /> Explore ongoing and completed projects</Link>
           </Reveal>

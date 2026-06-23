@@ -8,17 +8,12 @@
       "location": "Whitefield, Bengaluru",
       "type": "Commercial",
       "area": "12,600 sq.ft",
-      "status": "72% complete"
-    },
-    {
-      "id": "p2",
-      "image": "/images/hero-villa.png",
-      "category": "Ongoing",
-      "title": "Aster Villa",
-      "location": "Sarjapur, Bengaluru",
-      "type": "Residential",
-      "area": "3,950 sq.ft",
-      "status": "48% complete"
+      "status": "72% complete",
+      "completion": 72,
+      "stage": "MEP and interior works",
+      "highlights": "Flexible office floors, landscaped frontage and a premium arrival lobby.",
+      "materials": "High-performance glazing, branded electricals and commercial-grade finishes.",
+      "expectedCompletion": "December 2026"
     },
     {
       "id": "p3",
@@ -28,7 +23,12 @@
       "location": "JP Nagar, Bengaluru",
       "type": "Residential",
       "area": "4,800 sq.ft",
-      "status": "Completed"
+      "status": "Completed",
+      "completion": 100,
+      "stage": "Handed over",
+      "highlights": "Central courtyard, daylight-led planning and custom woodwork.",
+      "materials": "Premium concrete, UPVC systems and durable natural finishes.",
+      "expectedCompletion": "Completed"
     },
     {
       "id": "p4",
@@ -38,7 +38,12 @@
       "location": "Yelahanka, Bengaluru",
       "type": "Residential",
       "area": "5,400 sq.ft",
-      "status": "Completed"
+      "status": "Completed",
+      "completion": 100,
+      "stage": "Handed over",
+      "highlights": "Layered façade, generous family spaces and integrated landscape.",
+      "materials": "Large-format flooring, premium sanitaryware and weather-resistant exterior systems.",
+      "expectedCompletion": "Completed"
     }
   ],
   "packages": [
@@ -111,19 +116,38 @@
   "services": [
     {
       "id": "s1",
-      "name": "Residential Construction"
+      "name": "Residential Construction",
+      "description": "Custom homes designed around your family, site and future."
     },
     {
       "id": "s2",
-      "name": "Commercial Construction"
+      "name": "Commercial Construction",
+      "description": "Efficient, durable workplaces and commercial environments."
     },
     {
       "id": "s3",
-      "name": "Architecture"
+      "name": "Architectural Planning",
+      "description": "Site-responsive planning, elevations and coordinated drawings."
     },
     {
       "id": "s4",
-      "name": "Interior Design"
+      "name": "Interior Design",
+      "description": "Considered interiors from spatial planning to final styling."
+    },
+    {
+      "id": "s5",
+      "name": "Renovation & Remodelling",
+      "description": "Careful structural, functional and finish upgrades that unlock more value from existing spaces."
+    },
+    {
+      "id": "s6",
+      "name": "Project Management",
+      "description": "Professional control over schedule, quality, budget and coordinated site teams."
+    },
+    {
+      "id": "s7",
+      "name": "Turnkey Construction Solutions",
+      "description": "One accountable partner from first concept and approvals to final handover."
     }
   ],
   "team": [
@@ -142,7 +166,8 @@
   ],
   "hero": {
     "image": "/images/hero-villa.png",
-    "headline": "Building dreams. Delivering excellence."
+    "headline": "Building dreams. Delivering excellence.",
+    "subheadline": "Thoughtful design, precise execution and complete transparency—from the first sketch to the final key."
   },
   "gallery": [
     "/images/project-residence.png",
@@ -151,6 +176,7 @@
   ],
   "settings": {
     "phone": "+91 99015 67272",
+    "secondaryPhone": "+91 97401 77666",
     "email": "rsconstruction2027@gmail.com",
     "address": "14, 1st Main Rd, opp. Indian Oil Petrol Bunk, Rahmath Nagar, RT Nagar, Bengaluru, Karnataka 560032",
     "map": "https://share.google/YoghYTG0lBF0TiA2O",

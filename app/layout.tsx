@@ -6,6 +6,10 @@ import { Footer } from "@/components/Footer";
 import { FloatingActions } from "@/components/FloatingActions";
 import { SiteExperience } from "@/components/SiteExperience";
 import { EnquiryPopup } from "@/components/EnquiryPopup";
+import { getSiteData } from "@/lib/store";
+import { recaptchaEnabled } from "@/lib/security";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://rsconstruction.in"),
@@ -16,7 +20,12 @@ export const metadata: Metadata = {
   icons: { icon: "/icon.svg", shortcut: "/icon.svg", apple: "/icon.svg" },
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const data = await getSiteData();
+  const settings = (data.settings || {}) as Record<string, unknown>;
+  const social = (settings.social || {}) as Record<string, string>;
+  const phone = String(settings.phone || "+91 99015 67272");
+  const whatsapp = social.whatsapp || "https://wa.me/919901567272";
   const schema = {
     "@context": "https://schema.org",
     "@type": ["LocalBusiness", "GeneralContractor"],
@@ -32,11 +41,11 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="en">
       <body>
         <SiteExperience />
-        <EnquiryPopup />
-        <Header />
+        <EnquiryPopup recaptcha={recaptchaEnabled()} address={String(settings.address || "14, 1st Main Rd, RT Nagar, Bengaluru 560032")} />
+        <Header whatsapp={whatsapp} />
         <main>{children}</main>
         <Footer />
-        <FloatingActions />
+        <FloatingActions phone={phone} whatsapp={whatsapp} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
       </body>
     </html>
