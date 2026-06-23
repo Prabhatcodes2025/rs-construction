@@ -15,19 +15,6 @@ export function SiteExperience() {
   const pathname = usePathname();
   const cursorRef = useRef<HTMLDivElement>(null);
   const dotRef = useRef<HTMLDivElement>(null);
-  const firstLoad = useRef(true);
-
-  useEffect(() => {
-    document.body.classList.remove("page-entered", "page-settled");
-    const duration = firstLoad.current ? 720 : 320;
-    firstLoad.current = false;
-    const enterTimer = window.setTimeout(() => document.body.classList.add("page-entered"), duration);
-    const timer = window.setTimeout(() => document.body.classList.add("page-settled"), duration + 650);
-    return () => {
-      window.clearTimeout(enterTimer);
-      window.clearTimeout(timer);
-    };
-  }, [pathname]);
 
   useEffect(() => {
     const finePointer = window.matchMedia("(pointer:fine)").matches;
@@ -147,12 +134,6 @@ export function SiteExperience() {
     <>
       <div className="cursor-ring" ref={cursorRef} aria-hidden="true" />
       <div className="cursor-dot" ref={dotRef} aria-hidden="true" />
-      <div className="page-transition" aria-hidden="true">
-        <div className="preloader-blueprint" />
-        <div className="preloader-building"><i /><i /><i /><i /><i /></div>
-        <div className="preloader-brand"><span>RS</span><strong>RS CONSTRUCTION</strong><small>BUILDING EXCELLENCE...</small><small>DELIVERING TRUST...</small></div>
-        <div className="preloader-track"><b /></div><div className="preloader-percent">100%</div>
-      </div>
     </>
   );
 }

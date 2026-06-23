@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import "./globals.css";
 import "./premium.css";
 import { Header } from "@/components/Header";
@@ -8,6 +9,7 @@ import { SiteExperience } from "@/components/SiteExperience";
 import { EnquiryPopup } from "@/components/EnquiryPopup";
 import { getSiteData } from "@/lib/store";
 import { recaptchaEnabled } from "@/lib/security";
+import { GlobalPreloader, PreloaderFallback } from "@/components/GlobalPreloader";
 
 export const dynamic = "force-dynamic";
 
@@ -17,7 +19,7 @@ export const metadata: Metadata = {
   description: "Premium residential and commercial construction, architecture, interiors and turnkey project delivery in Bengaluru.",
   openGraph: { title: "RS Construction", description: "Building Excellence. Delivering Trust.", type: "website", images: ["/images/hero-villa.png"] },
   twitter: { card: "summary_large_image" },
-  icons: { icon: "/icon.svg", shortcut: "/icon.svg", apple: "/icon.svg" },
+  icons: { icon: "/icon.png", shortcut: "/icon.png", apple: "/icon.png" },
 };
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
@@ -40,6 +42,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   return (
     <html lang="en">
       <body>
+        <Suspense fallback={<PreloaderFallback />}><GlobalPreloader /></Suspense>
         <SiteExperience />
         <EnquiryPopup recaptcha={recaptchaEnabled()} address={String(settings.address || "14, 1st Main Rd, RT Nagar, Bengaluru 560032")} />
         <Header whatsapp={whatsapp} />

@@ -8,6 +8,7 @@ import {
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useMemo, useState } from "react";
+import { startRoutePreloader } from "./GlobalPreloader";
 
 type Item = Record<string, unknown>;
 type StorageState = { provider: string; durable: boolean };
@@ -21,6 +22,7 @@ type DeleteState = { module: string; index: number; label: string } | null;
 
 const navigation = [
   ["projects", "Projects", FolderKanban], ["packages", "Packages", Package],
+  ["whyUs", "Why Us comparison", CheckCircle2],
   ["services", "Services", Wrench], ["team", "Team members", Users],
   ["testimonials", "Testimonials", Star], ["hero", "Hero content", BriefcaseBusiness],
   ["gallery", "Gallery", ImageIcon], ["settings", "Contact details", Settings],
@@ -44,13 +46,35 @@ const schemas: Record<string, Field[]> = {
   ],
   packages: [
     { key: "name", label: "Package name", required: true }, { key: "price", label: "Price per sq.ft", required: true },
-    { key: "gstText", label: "GST text" }, { key: "features.Steel", label: "Steel" },
-    { key: "features.Windows", label: "Windows" }, { key: "features.Flooring", label: "Flooring" },
-    { key: "features.Paint", label: "Paint" }, { key: "features.Electrical", label: "Electrical" },
+    { key: "gstText", label: "GST text" }, { key: "cities", label: "Available cities", type: "list", full: true },
+    { key: "categoryTitles.Structure", label: "Structure accordion title" },
+    { key: "categoryTitles.Kitchen", label: "Kitchen accordion title" },
+    { key: "categoryTitles.Bathroom", label: "Bathroom accordion title" },
+    { key: "categoryTitles.Doors & Windows", label: "Doors & Windows accordion title" },
+    { key: "categoryTitles.Painting", label: "Painting accordion title" },
+    { key: "categoryTitles.Flooring", label: "Flooring accordion title" },
+    { key: "categoryTitles.Electrical", label: "Electrical accordion title" },
+    { key: "categoryTitles.Miscellaneous", label: "Miscellaneous accordion title" },
+    { key: "details.Structure", label: "Structure details", type: "textarea", full: true },
+    { key: "details.Kitchen", label: "Kitchen details", type: "textarea", full: true },
+    { key: "details.Bathroom", label: "Bathroom details", type: "textarea", full: true },
+    { key: "details.Doors & Windows", label: "Doors & Windows details", type: "textarea", full: true },
+    { key: "details.Painting", label: "Painting details", type: "textarea", full: true },
+    { key: "details.Flooring", label: "Flooring details", type: "textarea", full: true },
+    { key: "details.Electrical", label: "Electrical details", type: "textarea", full: true },
+    { key: "details.Miscellaneous", label: "Miscellaneous details", type: "textarea", full: true },
     { key: "bestFor", label: "Best for" }, { key: "description", label: "Description", type: "textarea", full: true },
-    { key: "featureList", label: "Features list", type: "list", full: true },
+    { key: "ctaText", label: "CTA text" },
     { key: "highlighted", label: "Highlight / best value", type: "checkbox" },
     { key: "displayOrder", label: "Display order", type: "number" },
+    { key: "active", label: "Active", type: "checkbox" },
+  ],
+  whyUs: [
+    { key: "parameter", label: "Parameter name", required: true, full: true },
+    { key: "rsValue", label: "RS Construction value", type: "select", options: ["Check", "Cross"], required: true },
+    { key: "othersValue", label: "Others value", type: "select", options: ["Cross", "Check"], required: true },
+    { key: "displayOrder", label: "Display order", type: "number" },
+    { key: "active", label: "Active", type: "checkbox" },
   ],
   services: [
     { key: "name", label: "Service name", required: true },
@@ -92,7 +116,7 @@ const schemas: Record<string, Field[]> = {
   gallery: [{ key: "url", label: "Image URL", type: "image", required: true, full: true }],
 };
 
-const defaults: Record<string, Item> = {
+const legacyDefaults: Record<string, Item> = {
   projects: { title: "", type: "Residential", category: "Ongoing", location: "", area: "", status: "Planning", completion: 0, stage: "Planning", expectedCompletion: "", description: "", highlights: "", materials: "", image: "/images/project-residence.png", gallery: [], ctaText: "Project enquiry", displayOrder: 0, featured: false },
   packages: { name: "", price: "₹0", gstText: "GST as applicable", features: {}, bestFor: "", description: "", featureList: [], highlighted: false, displayOrder: 0 },
   services: { name: "", description: "", detailedDescription: "", icon: "House", image: "", features: [], benefits: [], ctaText: "Discuss this service", displayOrder: 0, active: true },
@@ -101,11 +125,19 @@ const defaults: Record<string, Item> = {
   gallery: { url: "" },
 };
 
-const moduleLabels: Record<string, string> = {
+const defaults: Record<string, Item> = {
+  ...legacyDefaults,
+  packages: { name: "", price: "₹0", gstText: "Incl. GST", cities: ["Bengaluru"], categoryTitles: {}, details: {}, bestFor: "", description: "", ctaText: "Talk To Our Expert", highlighted: false, displayOrder: 0, active: true },
+  whyUs: { parameter: "", rsValue: "Check", othersValue: "Cross", displayOrder: 0, active: true },
+};
+
+const legacyModuleLabels: Record<string, string> = {
   projects: "Project", packages: "Package", services: "Service", team: "Team member",
   testimonials: "Testimonial", gallery: "Gallery image", hero: "Hero content",
   settings: "Contact details", seo: "SEO settings",
 };
+
+const moduleLabels: Record<string, string> = { ...legacyModuleLabels, whyUs: "Comparison row" };
 
 function valueOf(value: unknown) { return value == null ? "" : String(value); }
 function formatDate(value: unknown, includeTime = false) {
@@ -138,6 +170,7 @@ function normalizeDraft(module: string, draft: Item) {
 }
 function displayName(module: string, item: Item) {
   if (module === "projects") return valueOf(item.title);
+  if (module === "whyUs") return valueOf(item.parameter);
   if (module === "gallery") return valueOf(item.url).split("/").pop() || "Gallery image";
   return valueOf(item.name) || moduleLabels[module];
 }
@@ -203,6 +236,7 @@ export function AdminDashboard({ initial }: { initial: { site: Record<string, un
 
   async function logout() {
     await fetch("/api/admin/logout", { method: "POST" });
+    startRoutePreloader();
     router.push("/admin/login"); router.refresh();
   }
   async function uploadImage(file: File) {
@@ -257,17 +291,17 @@ export function AdminDashboard({ initial }: { initial: { site: Record<string, un
   }
   function quickAdd(module: string) { selectTab(module); openAdd(module); }
 
-  const currentItems: Item[] = ["projects", "packages", "services", "team", "testimonials", "gallery"].includes(tab) ? moduleItems(tab) : [];
+  const currentItems: Item[] = ["projects", "packages", "whyUs", "services", "team", "testimonials", "gallery"].includes(tab) ? moduleItems(tab) : [];
   const visibleItems = currentItems.filter(item => {
     const matchesText = JSON.stringify(item).toLowerCase().includes(moduleSearch.toLowerCase());
-    const filterKey = tab === "projects" ? valueOf(item.category) : tab === "testimonials" ? valueOf(item.status || "Published") : tab === "services" ? (item.active === false ? "Inactive" : "Active") : "All";
+    const filterKey = tab === "projects" ? valueOf(item.category) : tab === "testimonials" ? valueOf(item.status || "Published") : ["services", "packages", "whyUs"].includes(tab) ? (item.active === false ? "Inactive" : "Active") : "All";
     return matchesText && (moduleFilter === "All" || filterKey === moduleFilter);
   });
 
   return <main className="admin-app">
     {toast && <div className={`admin-toast ${toast.type}`}>{toast.type === "success" ? <CheckCircle2 /> : <XCircle />}<span>{toast.text}</span></div>}
     <aside className={mobile ? "admin-sidebar open" : "admin-sidebar"}>
-      <div className="admin-logo"><span>RS</span><div><strong>Construction</strong><small>Content administration</small></div><button aria-label="Close navigation" onClick={() => setMobile(false)}><X /></button></div>
+      <div className="admin-logo"><Image src="/images/rs-logo.png" alt="RS Construction" width={72} height={40} /><div><strong>Construction</strong><small>Content administration</small></div><button aria-label="Close navigation" onClick={() => setMobile(false)}><X /></button></div>
       <nav>
         <button className={tab === "overview" ? "active" : ""} onClick={() => selectTab("overview")}><BarChart3 />Overview</button>
         <button className={tab === "leads" ? "active" : ""} onClick={() => selectTab("leads")}><MessageSquareText />Enquiries <b>{counts.new}</b></button>
@@ -287,7 +321,7 @@ export function AdminDashboard({ initial }: { initial: { site: Record<string, un
       <div className="admin-content">
         {tab === "overview" && <Dashboard initial={initial} counts={counts} leads={leads} quickAdd={quickAdd} viewLeads={() => selectTab("leads")} />}
         {tab === "leads" && <Enquiries leads={filteredLeads} allLeads={leads} search={search} status={status} source={source} setSearch={setSearch} setStatus={setStatus} setSource={setSource} view={lead => setLeadModal(leads.indexOf(lead))} remove={lead => setDeleteState({ module: "leads", index: leads.indexOf(lead), label: valueOf(lead.name) })} update={(lead, key, value) => markLeads(leads.map(item => item.id === lead.id ? { ...item, [key]: value } : item))} />}
-        {["projects", "packages", "services", "team", "testimonials", "gallery"].includes(tab) && <ModuleList module={tab} items={visibleItems} total={currentItems.length} search={moduleSearch} filter={moduleFilter} setSearch={setModuleSearch} setFilter={setModuleFilter} add={() => openAdd(tab)} edit={item => openEdit(tab, currentItems.indexOf(item))} remove={item => setDeleteState({ module: tab, index: currentItems.indexOf(item), label: displayName(tab, item) })} />}
+        {["projects", "packages", "whyUs", "services", "team", "testimonials", "gallery"].includes(tab) && <ModuleList module={tab} items={visibleItems} total={currentItems.length} search={moduleSearch} filter={moduleFilter} setSearch={setModuleSearch} setFilter={setModuleFilter} add={() => openAdd(tab)} edit={item => openEdit(tab, currentItems.indexOf(item))} remove={item => setDeleteState({ module: tab, index: currentItems.indexOf(item), label: displayName(tab, item) })} />}
         {["hero", "settings", "seo"].includes(tab) && <SingletonModule module={tab} value={(site[tab] || {}) as Item} edit={() => openSingleton(tab)} />}
       </div>
     </section>
@@ -314,7 +348,7 @@ function Dashboard({ initial, counts, leads, quickAdd, viewLeads }: { initial: {
 }
 
 function ModuleList({ module, items, total, search, filter, setSearch, setFilter, add, edit, remove }: { module: string; items: Item[]; total: number; search: string; filter: string; setSearch: (value: string) => void; setFilter: (value: string) => void; add: () => void; edit: (item: Item) => void; remove: (item: Item) => void }) {
-  const filters = module === "projects" ? ["All", "Ongoing", "Completed"] : module === "testimonials" ? ["All", "Published", "Draft"] : module === "services" ? ["All", "Active", "Inactive"] : [];
+  const filters = module === "projects" ? ["All", "Ongoing", "Completed"] : module === "testimonials" ? ["All", "Published", "Draft"] : ["services", "packages", "whyUs"].includes(module) ? ["All", "Active", "Inactive"] : [];
   return <div className="admin-panel module-panel">
     <div className="panel-title"><div><span>Content module</span><h1>{module === "team" ? "Team members" : module}</h1><p>{total} item{total === 1 ? "" : "s"} configured. Add and edit through safe forms.</p></div><button className="admin-add" onClick={add}><Plus />Add {moduleLabels[module]}</button></div>
     <div className="admin-filters module-filters"><label><Search /><input value={search} onChange={event => setSearch(event.target.value)} placeholder={`Search ${module}...`} /></label>{filters.length > 0 && <select value={filter} onChange={event => setFilter(event.target.value)}>{filters.map(item => <option key={item}>{item}</option>)}</select>}</div>
@@ -334,6 +368,7 @@ function ModuleSummary({ module, item }: { module: string; item: Item }) {
     <div className="module-badges">
       {module === "projects" && <><b className={`status-badge ${valueOf(item.category).toLowerCase()}`}>{valueOf(item.category)}</b><span>{valueOf(item.completion)}%</span>{Boolean(item.featured) && <b className="status-badge featured">Featured</b>}</>}
       {module === "packages" && Boolean(item.highlighted || valueOf(item.label).toLowerCase().includes("best")) && <b className="status-badge featured">Best value</b>}
+      {["packages", "whyUs"].includes(module) && <b className={`status-badge ${item.active === false ? "closed" : "converted"}`}>{item.active === false ? "Inactive" : "Active"}</b>}
       {module === "services" && <b className={`status-badge ${item.active === false ? "closed" : "converted"}`}>{item.active === false ? "Inactive" : "Active"}</b>}
       {module === "testimonials" && <b className={`status-badge ${valueOf(item.status || "Published").toLowerCase()}`}>{valueOf(item.status || "Published")}</b>}
     </div>

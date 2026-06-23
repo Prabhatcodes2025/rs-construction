@@ -22,10 +22,10 @@ export function EnquiryPopup({ address = "14, 1st Main Rd, RT Nagar, Bengaluru 5
       const text = link?.textContent?.toLowerCase() || "";
       if (link && link.getAttribute("href")?.startsWith("/contact") && /estimate|consultation|enquire|quote|get in touch/.test(text)) { event.preventDefault(); setOpen(true); }
     };
-    document.addEventListener("click", click);
+    document.addEventListener("click", click, true);
     const closed = typeof window !== "undefined" ? sessionStorage.getItem("rs-popup-closed") : "1";
     const timer = !closed ? window.setTimeout(() => setOpen(true), 9000) : 0;
-    return () => { document.removeEventListener("click", click); if (timer) clearTimeout(timer); };
+    return () => { document.removeEventListener("click", click, true); if (timer) clearTimeout(timer); };
   }, [pathname]);
 
   useEffect(() => {
@@ -58,7 +58,7 @@ export function EnquiryPopup({ address = "14, 1st Main Rd, RT Nagar, Bengaluru 5
       <button className="enquiry-close" aria-label="Close enquiry form" onClick={close}><X /></button>
       <div className="enquiry-visual"><Image src="/images/hero-villa.png" alt="Contemporary villa by RS Construction" fill sizes="360px" /><div><span>18+ years of construction expertise</span><h3>Your vision.<br />One accountable team.</h3><p>{address}</p></div></div>
       <div className="enquiry-content">{sent ? <div className="enquiry-success"><CheckCircle2 /><h2>Thank you.</h2><p>Our construction expert will contact you shortly.</p><button className="button dark" onClick={close}>Continue browsing</button></div> : <>
-        <span className="eyebrow">Free expert consultation</span><h2 id="enquiry-title">Build your dream home with RS Construction</h2><p>Get transparent pricing and end-to-end construction support in Bengaluru.</p>
+        <Image className="popup-logo" src="/images/rs-logo.png" alt="RS Construction" width={108} height={60} /><span className="eyebrow">Free expert consultation</span><h2 id="enquiry-title">Build your dream home with RS Construction</h2><p>Get transparent pricing and end-to-end construction support in Bengaluru.</p>
         <form onSubmit={submit}><div className="popup-fields"><input required name="name" aria-label="Full name" autoComplete="name" placeholder="Full Name*" /><input required name="mobile" aria-label="Mobile number" autoComplete="tel" type="tel" placeholder="Mobile Number*" /><input required name="location" aria-label="Plot location" placeholder="Plot Location*" /><input name="plotSize" aria-label="Plot size" placeholder="Plot Size" /><select name="service" aria-label="Service required" defaultValue=""><option value="" disabled>Service Required</option><option>Residential Construction</option><option>Commercial Construction</option><option>Architectural Planning</option><option>Interior Design</option><option>Renovation &amp; Remodelling</option><option>Project Management</option><option>Turnkey Construction Solutions</option></select><textarea name="message" aria-label="Message" rows={2} placeholder="Message (optional)" /></div><CaptchaField enabled={recaptcha} onVerify={verify} />{error && <p className="form-error">{error}</p>}<button className="button primary popup-submit" type="submit">Start your construction journey</button></form>
         <div className="popup-trust"><span><ShieldCheck />Quality construction</span><span><IndianRupee />Transparent pricing</span><span><Clock3 />On-time delivery</span></div>
       </>}</div>

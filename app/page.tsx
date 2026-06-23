@@ -21,7 +21,7 @@ const strengths = [
   [UsersRound, "Professional management", "A single accountable team coordinating every workstream."],
   [Layers3, "Turnkey solutions", "Architecture, construction and interiors under one roof."],
 ];
-const packages = [
+const fallbackPackages = [
   ["01", "Basic", "1,940", "Reliable essentials for a well-built, efficient home.", ["Standard vitrified flooring", "ISI electricals", "Branded plumbing"]],
   ["02", "Classic", "2,070", "Our balanced specification for modern family homes.", ["Premium vitrified flooring", "Enhanced electrical plan", "Designer elevation"]],
   ["03", "Premium", "2,400", "Elevated finishes, refined detailing and more choice.", ["Large-format flooring", "Premium sanitaryware", "Custom façade design"]],
@@ -55,6 +55,21 @@ export default async function Home() {
     progress: Number(project.completion ?? (String(project.category) === "Completed" ? 100 : parseInt(String(project.status)) || 0)),
   })) : fallbackProjects;
   const projects = dynamicProjects.length ? dynamicProjects : fallbackProjects;
+  const dynamicPackages = Array.isArray(data.packages) ? (data.packages as Array<Record<string, unknown>>)
+    .filter(item => item.active !== false)
+    .sort((a, b) => Number(a.displayOrder || 0) - Number(b.displayOrder || 0))
+    .slice(0, 4)
+    .map((item, index) => {
+      const details = (item.details || {}) as Record<string, unknown>;
+      return [
+        String(index + 1).padStart(2, "0"),
+        String(item.name || "Package"),
+        String(item.price || "₹0").replace(/[^\d,]/g, ""),
+        String(item.description || item.bestFor || "A transparent construction specification tailored to your goals."),
+        [details.Structure, details["Doors & Windows"], details.Flooring].filter(Boolean).map(String),
+      ];
+    }) : [];
+  const packages = dynamicPackages.length ? dynamicPackages : fallbackPackages;
   return (
     <>
       <section className="hero">

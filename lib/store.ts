@@ -17,6 +17,13 @@ const requiredServices = [
   { id: "s6", name: "Project Management", description: "Professional control over schedule, quality, budget and coordinated site teams." },
   { id: "s7", name: "Turnkey Construction Solutions", description: "One accountable partner from first concept and approvals to final handover." },
 ];
+const packageCategories = ["Structure", "Kitchen", "Bathroom", "Doors & Windows", "Painting", "Flooring", "Electrical", "Miscellaneous"];
+const supportedCities = ["Bengaluru", "Mysuru", "Chennai", "Hyderabad", "Pune"];
+const requiredWhyUs = [
+  "Transparent Project Tracking", "Money Safety & Stage-Wise Payment", "Multiple Design Options",
+  "Quality Checks at Every Stage", "Cost Overrun Protection", "Experienced Project Team",
+  "On-Time Delivery Commitment", "End-to-End Construction Support",
+].map((parameter, index) => ({ id: `why-${index + 1}`, parameter, rsValue: "Check", othersValue: "Cross", displayOrder: index + 1, active: true }));
 
 export type Lead = {
   id: string; createdAt: string; source: string; status: "New" | "Contacted" | "Converted" | "Closed";
@@ -67,7 +74,33 @@ export async function getSiteData() {
   const currentServices = Array.isArray(stored.services) ? stored.services as Array<Record<string, unknown>> : [];
   const services = requiredServices.map(required => ({ ...required, ...(currentServices.find(item => item.id === required.id) || {}), name: required.name }));
   const extras = currentServices.filter(item => !requiredServices.some(required => required.id === item.id));
-  return { ...stored, services: [...services, ...extras] } as Record<string, unknown>;
+  const packages = (Array.isArray(stored.packages) ? stored.packages as Array<Record<string, unknown>> : []).map((item, index) => {
+    const features = item.features && typeof item.features === "object" ? item.features as Record<string, unknown> : {};
+    const details = item.details && typeof item.details === "object" ? item.details as Record<string, unknown> : {};
+    const defaults: Record<string, string> = {
+      Structure: features.Steel ? `Steel: ${features.Steel}` : "Details can be updated from admin panel.",
+      Kitchen: "Details can be updated from admin panel.",
+      Bathroom: "Details can be updated from admin panel.",
+      "Doors & Windows": features.Windows ? `Windows: ${features.Windows}` : "Details can be updated from admin panel.",
+      Painting: features.Paint ? `Paint: ${features.Paint}` : "Details can be updated from admin panel.",
+      Flooring: features.Flooring ? `Flooring allowance: ${features.Flooring}` : "Details can be updated from admin panel.",
+      Electrical: features.Electrical ? `Electrical specification: ${features.Electrical}` : "Details can be updated from admin panel.",
+      Miscellaneous: "Details can be updated from admin panel.",
+    };
+    return {
+      ...item,
+      gstText: item.gstText || "Incl. GST",
+      cities: Array.isArray(item.cities) && item.cities.length ? item.cities : supportedCities,
+      details: Object.fromEntries(packageCategories.map(category => [category, details[category] || defaults[category]])),
+      categoryTitles: Object.fromEntries(packageCategories.map(category => [category, (item.categoryTitles as Record<string, unknown> | undefined)?.[category] || category])),
+      ctaText: item.ctaText || "Talk To Our Expert",
+      displayOrder: item.displayOrder ?? index + 1,
+      active: item.active !== false,
+      highlighted: item.highlighted ?? String(item.label || "").toLowerCase().includes("best"),
+    };
+  });
+  const whyUs = Array.isArray(stored.whyUs) && stored.whyUs.length ? stored.whyUs : requiredWhyUs;
+  return { ...stored, services: [...services, ...extras], packages, whyUs } as Record<string, unknown>;
 }
 export async function saveSiteData(data: Record<string, unknown>) {
   if (useBlob()) return writeBlobJson(siteBlobPath, data);
