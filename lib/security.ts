@@ -16,7 +16,7 @@ export function adminCredentials() {
 }
 
 export function recaptchaEnabled() {
-  return process.env.ENABLE_RECAPTCHA === "true";
+  return process.env.ENABLE_RECAPTCHA?.toLowerCase() === "true";
 }
 
 export function createSession(email: string) {
@@ -38,16 +38,22 @@ export async function isAdmin() { return verifySession((await cookies()).get(COO
 export const sessionCookie = COOKIE;
 
 export async function verifyRecaptcha(token?: string) {
-  if (!recaptchaEnabled()) return true;
+  if (!recaptchaEnabled()) return { success: true };
   const secretKey = process.env.RECAPTCHA_SECRET_KEY;
   if (!secretKey) {
-    if (process.env.NODE_ENV !== "production" || process.env.ALLOW_DEV_CAPTCHA === "true") return token === "dev-verified";
-    return token === "recaptcha-not-configured";
+    if (process.env.NODE_ENV !== "production" && process.env.ALLOW_DEV_CAPTCHA === "true") {
+      return token === "dev-verified" ? { success: true } : { success: false, error: "reCAPTCHA verification failed." };
+    }
+    return { success: false, error: "reCAPTCHA secret key is not configured." };
   }
-  if (!token) return false;
+  if (!token) return { success: false, error: "reCAPTCHA verification failed." };
   const body = new URLSearchParams({ secret: secretKey, response: token });
-  const response = await fetch("https://www.google.com/recaptcha/api/siteverify", { method: "POST", body, cache: "no-store" });
-  if (!response.ok) return false;
-  const result = await response.json() as { success?: boolean };
-  return Boolean(result.success);
+  try {
+    const response = await fetch("https://www.google.com/recaptcha/api/siteverify", { method: "POST", body, cache: "no-store" });
+    if (!response.ok) return { success: false, error: "reCAPTCHA verification failed." };
+    const result = await response.json() as { success?: boolean };
+    return result.success ? { success: true } : { success: false, error: "reCAPTCHA verification failed." };
+  } catch {
+    return { success: false, error: "reCAPTCHA verification failed." };
+  }
 }

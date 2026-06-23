@@ -45,6 +45,10 @@ export function EnquiryPopup({ address = "14, 1st Main Rd, RT Nagar, Bengaluru 5
   }
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); setError("");
+    if (recaptcha && !captcha) {
+      setError("Please complete the reCAPTCHA verification.");
+      return;
+    }
     const form = new FormData(event.currentTarget);
     const response = await fetch("/api/leads", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ source: "Enquiry Popup", name: form.get("name"), mobile: form.get("mobile"), location: form.get("location"), plotSize: form.get("plotSize"), service: form.get("service"), message: form.get("message"), captchaToken: captcha }) });
     const result = await response.json();

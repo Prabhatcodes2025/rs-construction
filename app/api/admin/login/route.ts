@@ -3,7 +3,8 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
   const { email, password, captchaToken } = await request.json();
-  if (!await verifyRecaptcha(captchaToken)) return NextResponse.json({ error: "Verification failed." }, { status: 400 });
+  const captcha = await verifyRecaptcha(captchaToken);
+  if (!captcha.success) return NextResponse.json({ error: captcha.error || "reCAPTCHA verification failed." }, { status: 400 });
   const credentials = adminCredentials();
   if (email !== credentials.username || password !== credentials.password) return NextResponse.json({ error: "Invalid username or password." }, { status: 401 });
   const response = NextResponse.json({ success: true });
