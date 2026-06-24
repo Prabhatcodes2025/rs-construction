@@ -7,8 +7,9 @@ import { CaptchaField } from "./CaptchaField";
 export function LeadForm({ recaptcha = false }: { recaptcha?: boolean }) {
   const [sent, setSent] = useState(false);
   const [captcha, setCaptcha] = useState("");
+  const [captchaReset, setCaptchaReset] = useState(0);
   const [error, setError] = useState("");
-  const captchaRequired = recaptcha && process.env.NEXT_PUBLIC_ENABLE_RECAPTCHA === "true" && Boolean(process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY);
+  const captchaRequired = recaptcha && process.env.NEXT_PUBLIC_ENABLE_RECAPTCHA === "true" && Boolean(process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY?.trim());
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); setError("");
@@ -19,7 +20,10 @@ export function LeadForm({ recaptcha = false }: { recaptcha?: boolean }) {
     const form = new FormData(event.currentTarget);
     const response = await fetch("/api/leads", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ source: "Contact Form", name: form.get("name"), mobile: form.get("mobile"), email: form.get("email"), location: form.get("location"), plotSize: form.get("plotSize"), message: form.get("message"), captchaToken: captcha }) });
     const result = await response.json();
-    if (!response.ok) return setError(result.error || "Please check the form.");
+    if (!response.ok) {
+      setCaptchaReset(value => value + 1);
+      return setError(result.error || "Please check the form.");
+    }
     setSent(true);
   }
   function showCaptchaRequired() {
@@ -44,7 +48,7 @@ export function LeadForm({ recaptcha = false }: { recaptcha?: boolean }) {
       <div><label>Email<input name="email" autoComplete="email" type="email" placeholder="you@example.com" /></label><label>Plot location<input name="location" placeholder="Area, Bengaluru" /></label></div>
       <label>Plot size<input name="plotSize" placeholder="e.g. 30 × 40 or 1,200 sq.ft" /></label>
       <label>Tell us about your project<textarea name="message" rows={5} placeholder="Home, commercial space, interiors, preferred timeline..." /></label>
-      <CaptchaField enabled={captchaRequired} onVerify={setCaptcha} />
+      <CaptchaField enabled={captchaRequired} onVerify={setCaptcha} resetSignal={captchaReset} />
       {error && <p className="form-error">{error}</p>}
       <button className="button primary form-submit" type="submit" onClick={showCaptchaRequired}>Request a consultation <ArrowRight size={18} /></button>
       <small>By submitting, you agree to be contacted by RS Construction about your inquiry.</small>

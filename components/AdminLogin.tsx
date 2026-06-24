@@ -9,9 +9,10 @@ import Image from "next/image";
 
 export function AdminLogin({ recaptcha = false, temporaryMode = false }: { recaptcha?: boolean; temporaryMode?: boolean }) {
   const [captcha, setCaptcha] = useState("");
+  const [captchaReset, setCaptchaReset] = useState(0);
   const [error, setError] = useState("");
   const router = useRouter();
-  const captchaRequired = recaptcha && process.env.NEXT_PUBLIC_ENABLE_RECAPTCHA === "true" && Boolean(process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY);
+  const captchaRequired = recaptcha && process.env.NEXT_PUBLIC_ENABLE_RECAPTCHA === "true" && Boolean(process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY?.trim());
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -27,7 +28,10 @@ export function AdminLogin({ recaptcha = false, temporaryMode = false }: { recap
       body: JSON.stringify({ email: form.get("email"), password: form.get("password"), captchaToken: captcha }),
     });
     const result = await response.json();
-    if (!response.ok) return setError(result.error || "Invalid username or password.");
+    if (!response.ok) {
+      setCaptchaReset(value => value + 1);
+      return setError(result.error || "Invalid username or password.");
+    }
     startRoutePreloader();
     router.push("/admin");
     router.refresh();
@@ -52,7 +56,7 @@ export function AdminLogin({ recaptcha = false, temporaryMode = false }: { recap
         {temporaryMode && <p className="temporary-login-note"><strong>Temporary recovery login</strong><span>Username: admin / Password: admin123</span></p>}
         <label>Username<input name="email" type="text" required autoComplete="username" /></label>
         <label>Password<input name="password" type="password" required autoComplete="current-password" /></label>
-        <CaptchaField enabled={captchaRequired} onVerify={setCaptcha} />
+        <CaptchaField enabled={captchaRequired} onVerify={setCaptcha} resetSignal={captchaReset} />
         {error && <p className="form-error">{error}</p>}
         <button className="button primary" type="submit" onClick={showCaptchaRequired}>Secure login</button>
         <small><ShieldCheck /> {temporaryMode ? "Temporary credentials are active until environment variables are configured." : "Credentials and session secrets are environment-configured."}</small>

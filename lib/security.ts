@@ -16,7 +16,7 @@ export function adminCredentials() {
 }
 
 export function recaptchaEnabled() {
-  return process.env.NEXT_PUBLIC_ENABLE_RECAPTCHA === "true" && Boolean(process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY);
+  return process.env.NEXT_PUBLIC_ENABLE_RECAPTCHA === "true" && Boolean(process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY?.trim());
 }
 
 export function createSession(email: string) {
@@ -39,7 +39,7 @@ export const sessionCookie = COOKIE;
 
 export async function verifyRecaptcha(token?: string) {
   if (process.env.ENABLE_RECAPTCHA !== "true") return { success: true };
-  const secretKey = process.env.RECAPTCHA_SECRET_KEY;
+  const secretKey = process.env.RECAPTCHA_SECRET_KEY?.trim();
   if (!secretKey) {
     if (process.env.NODE_ENV !== "production" && process.env.ALLOW_DEV_CAPTCHA === "true") {
       return token === "dev-verified" ? { success: true } : { success: false, error: "reCAPTCHA verification failed." };
@@ -50,10 +50,21 @@ export async function verifyRecaptcha(token?: string) {
   const body = new URLSearchParams({ secret: secretKey, response: token });
   try {
     const response = await fetch("https://www.google.com/recaptcha/api/siteverify", { method: "POST", body, cache: "no-store" });
-    if (!response.ok) return { success: false, error: "reCAPTCHA verification failed." };
-    const result = await response.json() as { success?: boolean };
+    if (!response.ok) {
+      console.error("reCAPTCHA siteverify HTTP error", { status: response.status, statusText: response.statusText });
+      return { success: false, error: "reCAPTCHA verification failed." };
+    }
+    const result = await response.json() as { success?: boolean; "error-codes"?: string[]; challenge_ts?: string; hostname?: string };
+    if (!result.success) {
+      console.error("reCAPTCHA siteverify failed", {
+        errorCodes: result["error-codes"] || [],
+        hostname: result.hostname,
+        challengeTs: result.challenge_ts,
+      });
+    }
     return result.success ? { success: true } : { success: false, error: "reCAPTCHA verification failed." };
-  } catch {
+  } catch (error) {
+    console.error("reCAPTCHA siteverify request failed", { message: error instanceof Error ? error.message : "Unknown error" });
     return { success: false, error: "reCAPTCHA verification failed." };
   }
 }
