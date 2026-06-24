@@ -12,16 +12,22 @@ export function CaptchaField({ onVerify, enabled = false }: { onVerify: (token: 
   const widgetId = useRef<number | null>(null);
   const [ready, setReady] = useState(false);
   const [rendered, setRendered] = useState(false);
+  const [failed, setFailed] = useState(false);
   const renderCaptcha = useCallback(() => {
-    if (!enabled || !clientEnabled || !siteKey || rendered || !window.grecaptcha) return;
-    widgetId.current = window.grecaptcha.render(id, {
-      sitekey: siteKey,
-      callback: onVerify,
-      "expired-callback": () => onVerify(""),
-      "error-callback": () => onVerify(""),
-    });
-    setRendered(true);
-  }, [clientEnabled, enabled, id, onVerify, rendered, siteKey]);
+    if (!enabled || !clientEnabled || !siteKey || rendered || failed || !window.grecaptcha) return;
+    try {
+      widgetId.current = window.grecaptcha.render(id, {
+        sitekey: siteKey,
+        callback: onVerify,
+        "expired-callback": () => onVerify(""),
+        "error-callback": () => onVerify(""),
+      });
+      setRendered(true);
+    } catch {
+      setFailed(true);
+      onVerify("");
+    }
+  }, [clientEnabled, enabled, failed, id, onVerify, rendered, siteKey]);
 
   useEffect(() => {
     if (!enabled || !clientEnabled) {
@@ -36,5 +42,5 @@ export function CaptchaField({ onVerify, enabled = false }: { onVerify: (token: 
   }, [ready, renderCaptcha]);
 
   if (!enabled || !clientEnabled || !siteKey) return null;
-  return <><Script src="https://www.google.com/recaptcha/api.js?render=explicit" strategy="afterInteractive" onLoad={() => setReady(true)} /><div id={id} className="recaptcha-box" /></>;
+  return <><Script src="https://www.google.com/recaptcha/api.js?render=explicit" strategy="afterInteractive" onLoad={() => setReady(true)} onError={() => setFailed(true)} /><div id={id} className="recaptcha-box" /></>;
 }

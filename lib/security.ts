@@ -16,7 +16,7 @@ export function adminCredentials() {
 }
 
 export function recaptchaEnabled() {
-  return process.env.ENABLE_RECAPTCHA === "true" && process.env.NEXT_PUBLIC_ENABLE_RECAPTCHA === "true";
+  return process.env.NEXT_PUBLIC_ENABLE_RECAPTCHA === "true" && Boolean(process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY);
 }
 
 export function createSession(email: string) {
@@ -38,7 +38,7 @@ export async function isAdmin() { return verifySession((await cookies()).get(COO
 export const sessionCookie = COOKIE;
 
 export async function verifyRecaptcha(token?: string) {
-  if (!recaptchaEnabled()) return { success: true };
+  if (process.env.ENABLE_RECAPTCHA !== "true") return { success: true };
   const secretKey = process.env.RECAPTCHA_SECRET_KEY;
   if (!secretKey) {
     if (process.env.NODE_ENV !== "production" && process.env.ALLOW_DEV_CAPTCHA === "true") {
