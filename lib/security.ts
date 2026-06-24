@@ -44,7 +44,8 @@ export async function verifyRecaptcha(token?: string) {
     if (process.env.NODE_ENV !== "production" && process.env.ALLOW_DEV_CAPTCHA === "true") {
       return token === "dev-verified" ? { success: true } : { success: false, error: "reCAPTCHA verification failed." };
     }
-    return { success: false, error: "reCAPTCHA secret key is not configured." };
+    console.error("reCAPTCHA secret key is missing while ENABLE_RECAPTCHA is true.");
+    return { success: false, error: "reCAPTCHA verification failed." };
   }
   if (!token) return { success: false, error: "reCAPTCHA verification failed." };
   const body = new URLSearchParams({ secret: secretKey, response: token });
