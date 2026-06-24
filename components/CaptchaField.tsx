@@ -7,12 +7,13 @@ declare global { interface Window { grecaptcha?: { render: (id: string, options:
 
 export function CaptchaField({ onVerify, enabled = false }: { onVerify: (token: string) => void; enabled?: boolean }) {
   const id = `captcha-${useId().replaceAll(":", "")}`;
+  const clientEnabled = process.env.NEXT_PUBLIC_ENABLE_RECAPTCHA === "true";
   const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
   const widgetId = useRef<number | null>(null);
   const [ready, setReady] = useState(false);
   const [rendered, setRendered] = useState(false);
   const renderCaptcha = useCallback(() => {
-    if (!enabled || !siteKey || rendered || !window.grecaptcha) return;
+    if (!enabled || !clientEnabled || !siteKey || rendered || !window.grecaptcha) return;
     widgetId.current = window.grecaptcha.render(id, {
       sitekey: siteKey,
       callback: onVerify,
@@ -20,23 +21,20 @@ export function CaptchaField({ onVerify, enabled = false }: { onVerify: (token: 
       "error-callback": () => onVerify(""),
     });
     setRendered(true);
-  }, [enabled, id, onVerify, rendered, siteKey]);
+  }, [clientEnabled, enabled, id, onVerify, rendered, siteKey]);
 
   useEffect(() => {
-    if (!enabled) {
+    if (!enabled || !clientEnabled) {
       onVerify("");
       return;
     }
     if (!siteKey) onVerify("");
-  }, [enabled, onVerify, siteKey]);
+  }, [clientEnabled, enabled, onVerify, siteKey]);
 
   useEffect(() => {
     renderCaptcha();
   }, [ready, renderCaptcha]);
 
-  if (!enabled) return null;
-  if (!siteKey) {
-    return <p className="captcha-notice">reCAPTCHA site key is not configured.</p>;
-  }
+  if (!enabled || !clientEnabled || !siteKey) return null;
   return <><Script src="https://www.google.com/recaptcha/api.js?render=explicit" strategy="afterInteractive" onLoad={() => setReady(true)} /><div id={id} className="recaptcha-box" /></>;
 }

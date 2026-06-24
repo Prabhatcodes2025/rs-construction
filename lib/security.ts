@@ -16,7 +16,7 @@ export function adminCredentials() {
 }
 
 export function recaptchaEnabled() {
-  return process.env.ENABLE_RECAPTCHA?.toLowerCase() === "true";
+  return process.env.ENABLE_RECAPTCHA === "true" && process.env.NEXT_PUBLIC_ENABLE_RECAPTCHA === "true";
 }
 
 export function createSession(email: string) {

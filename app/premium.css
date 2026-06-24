@@ -615,7 +615,7 @@ p{font-size:15px;line-height:1.8}
 }
 .enquiry-success{height:100%;display:flex;flex-direction:column;justify-content:center;align-items:flex-start}.enquiry-success>svg{width:65px;height:65px;color:#16a34a}.enquiry-success h2{font-size:55px;margin:22px 0 10px}
 .dev-captcha{display:flex!important;align-items:center;gap:8px;margin:13px 0!important;padding:12px;border:1px dashed #f5a46e;border-radius:7px;background:#fff8f3;color:#77513a;font-size:11px!important;text-transform:none!important;letter-spacing:0!important}.dev-captcha input{width:auto!important;margin:0!important}
-.recaptcha-box{margin:12px 0;min-height:74px;max-width:100%;overflow:hidden}.recaptcha-box>div{max-width:100%}.form-error{margin:8px 0!important;color:#b91c1c!important;font-size:11px!important}
+.recaptcha-box{margin:12px 0;min-height:74px}.form-error{margin:8px 0!important;color:#b91c1c!important;font-size:11px!important}
 .project-status-row{display:flex;justify-content:space-between;align-items:center;margin-top:14px}.project-status-row strong{font-size:10px;color:#ff9b58;text-transform:uppercase}.project-status-row a{font-size:10px;text-transform:uppercase;font-weight:850}
 
 /* Premium contact form refinement */

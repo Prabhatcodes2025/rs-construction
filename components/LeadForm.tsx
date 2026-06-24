@@ -8,10 +8,11 @@ export function LeadForm({ recaptcha = false }: { recaptcha?: boolean }) {
   const [sent, setSent] = useState(false);
   const [captcha, setCaptcha] = useState("");
   const [error, setError] = useState("");
+  const captchaRequired = recaptcha && process.env.NEXT_PUBLIC_ENABLE_RECAPTCHA === "true";
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); setError("");
-    if (recaptcha && !captcha) {
+    if (captchaRequired && !captcha) {
       setError("Please complete the reCAPTCHA verification.");
       return;
     }
@@ -40,7 +41,7 @@ export function LeadForm({ recaptcha = false }: { recaptcha?: boolean }) {
       <div><label>Email<input name="email" autoComplete="email" type="email" placeholder="you@example.com" /></label><label>Plot location<input name="location" placeholder="Area, Bengaluru" /></label></div>
       <label>Plot size<input name="plotSize" placeholder="e.g. 30 × 40 or 1,200 sq.ft" /></label>
       <label>Tell us about your project<textarea name="message" rows={5} placeholder="Home, commercial space, interiors, preferred timeline..." /></label>
-      <CaptchaField enabled={recaptcha} onVerify={setCaptcha} />
+      <CaptchaField enabled={captchaRequired} onVerify={setCaptcha} />
       {error && <p className="form-error">{error}</p>}
       <button className="button primary form-submit" type="submit">Request a consultation <ArrowRight size={18} /></button>
       <small>By submitting, you agree to be contacted by RS Construction about your inquiry.</small>
