@@ -3,6 +3,7 @@ import { PageHero } from "@/components/PageHero";
 import { LeadForm } from "@/components/LeadForm";
 import { getSiteData } from "@/lib/store";
 import { recaptchaEnabled } from "@/lib/security";
+import { captchaFallbackEnabled, captchaProvider } from "@/lib/captcha";
 
 export const metadata = { title: "Contact", description: "Contact RS Construction for home and commercial construction in Bengaluru." };
 
@@ -27,7 +28,7 @@ export default async function Contact() {
         <a className="address-card" href={map}><MapPin /><span><small>Visit our office</small>{address}</span></a>
         <a className="map-placeholder" href={map}><MapPin /><strong>Open location in Google Maps</strong><span>RS Construction · Bengaluru</span></a>
       </div>
-      <LeadForm recaptcha={recaptchaEnabled()} />
+      <LeadForm captchaFallback={captchaFallbackEnabled()} captchaProvider={captchaProvider() === "text" ? "text" : "google"} recaptcha={recaptchaEnabled()} />
     </div></section>
   </>;
 }

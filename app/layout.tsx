@@ -9,6 +9,7 @@ import { SiteExperience } from "@/components/SiteExperience";
 import { EnquiryPopup } from "@/components/EnquiryPopup";
 import { getSiteData } from "@/lib/store";
 import { recaptchaEnabled } from "@/lib/security";
+import { captchaFallbackEnabled, captchaProvider } from "@/lib/captcha";
 import { GlobalPreloader, PreloaderFallback } from "@/components/GlobalPreloader";
 
 export const dynamic = "force-dynamic";
@@ -44,7 +45,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
       <body>
         <Suspense fallback={<PreloaderFallback />}><GlobalPreloader /></Suspense>
         <SiteExperience />
-        <EnquiryPopup recaptcha={recaptchaEnabled()} address={String(settings.address || "14, 1st Main Rd, RT Nagar, Bengaluru 560032")} />
+        <EnquiryPopup captchaFallback={captchaFallbackEnabled()} captchaProvider={captchaProvider() === "text" ? "text" : "google"} recaptcha={recaptchaEnabled()} address={String(settings.address || "14, 1st Main Rd, RT Nagar, Bengaluru 560032")} />
         <Header whatsapp={whatsapp} />
         <main>{children}</main>
         <Footer />

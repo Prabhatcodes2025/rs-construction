@@ -1,6 +1,7 @@
 import { promises as fs } from "fs";
 import path from "path";
 import { get, put } from "@vercel/blob";
+import { readLeadsFromSupabase, readSiteDataFromSupabase, saveLeadsToSupabase, saveLeadToSupabase, saveSiteDataToSupabase, supabaseConfigured } from "./supabase";
 
 const dataDir = path.join(process.cwd(), "data");
 const sitePath = path.join(dataDir, "site-data.json");
@@ -63,14 +64,14 @@ async function writeBlobJson(pathname: string, value: unknown) {
 
 export function storageStatus() {
   return {
-    provider: useBlob() ? "Vercel Blob" : process.env.VERCEL ? "Not configured" : "Local files",
-    durable: useBlob() || !process.env.VERCEL,
+    provider: supabaseConfigured() ? "Supabase" : useBlob() ? "Vercel Blob" : process.env.VERCEL ? "Database not connected" : "Local files",
+    durable: supabaseConfigured() || useBlob() || !process.env.VERCEL,
   };
 }
 
 export async function getSiteData() {
   const bundled = await readJson<Record<string, unknown>>(sitePath, {});
-  const stored = useBlob() ? await readBlobJson(siteBlobPath, bundled) : bundled;
+  const stored = supabaseConfigured() ? await readSiteDataFromSupabase(bundled) : useBlob() ? await readBlobJson(siteBlobPath, bundled) : bundled;
   const currentServices = Array.isArray(stored.services) ? stored.services as Array<Record<string, unknown>> : [];
   const services = requiredServices.map(required => ({ ...required, ...(currentServices.find(item => item.id === required.id) || {}), name: required.name }));
   const extras = currentServices.filter(item => !requiredServices.some(required => required.id === item.id));
@@ -103,19 +104,25 @@ export async function getSiteData() {
   return { ...stored, services: [...services, ...extras], packages, whyUs } as Record<string, unknown>;
 }
 export async function saveSiteData(data: Record<string, unknown>) {
+  if (supabaseConfigured()) return saveSiteDataToSupabase(data);
   if (useBlob()) return writeBlobJson(siteBlobPath, data);
   await writeJson(sitePath, data);
 }
 export async function getLeads() {
   const bundled = await readJson<Lead[]>(leadsPath, []);
-  return useBlob() ? readBlobJson(leadsBlobPath, bundled) : bundled;
+  return supabaseConfigured() ? readLeadsFromSupabase(bundled) : useBlob() ? readBlobJson(leadsBlobPath, bundled) : bundled;
 }
 export async function addLead(input: Omit<Lead, "id" | "createdAt" | "status">) {
   const leads = await getLeads();
   const lead: Lead = { ...input, id: crypto.randomUUID(), createdAt: new Date().toISOString(), status: "New" };
+  if (supabaseConfigured()) {
+    await saveLeadToSupabase(lead);
+    return lead;
+  }
   leads.unshift(lead); await saveLeads(leads); return lead;
 }
 export async function saveLeads(leads: Lead[]) {
+  if (supabaseConfigured()) return saveLeadsToSupabase(leads);
   if (useBlob()) return writeBlobJson(leadsBlobPath, leads);
   await writeJson(leadsPath, leads);
 }
