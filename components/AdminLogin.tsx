@@ -12,7 +12,8 @@ export function AdminLogin({ recaptcha = false, temporaryMode = false }: { recap
   const [captchaReset, setCaptchaReset] = useState(0);
   const [error, setError] = useState("");
   const router = useRouter();
-  const captchaRequired = recaptcha && process.env.NEXT_PUBLIC_ENABLE_RECAPTCHA === "true" && Boolean(process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY?.trim());
+  const captchaEnabled = recaptcha && process.env.NEXT_PUBLIC_ENABLE_RECAPTCHA === "true";
+  const captchaRequired = captchaEnabled && Boolean(process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY?.trim());
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -56,7 +57,7 @@ export function AdminLogin({ recaptcha = false, temporaryMode = false }: { recap
         {temporaryMode && <p className="temporary-login-note"><strong>Temporary recovery login</strong><span>Username: admin / Password: admin123</span></p>}
         <label>Username<input name="email" type="text" required autoComplete="username" /></label>
         <label>Password<input name="password" type="password" required autoComplete="current-password" /></label>
-        <CaptchaField enabled={captchaRequired} onVerify={setCaptcha} resetSignal={captchaReset} />
+        <CaptchaField enabled={captchaEnabled} onVerify={setCaptcha} resetSignal={captchaReset} />
         {error && <p className="form-error">{error}</p>}
         <button className="button primary" type="submit" onClick={showCaptchaRequired}>Secure login</button>
         <small><ShieldCheck /> {temporaryMode ? "Temporary credentials are active until environment variables are configured." : "Credentials and session secrets are environment-configured."}</small>

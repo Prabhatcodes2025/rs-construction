@@ -9,33 +9,50 @@ export function CaptchaField({ onVerify, enabled = false, resetSignal = 0 }: { o
   const id = `captcha-${useId().replaceAll(":", "")}`;
   const clientEnabled = process.env.NEXT_PUBLIC_ENABLE_RECAPTCHA === "true";
   const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY?.trim();
+  const shouldMount = enabled && clientEnabled;
+  const isDevelopment = process.env.NODE_ENV !== "production";
   const widgetId = useRef<number | null>(null);
   const [ready, setReady] = useState(false);
   const [rendered, setRendered] = useState(false);
   const [failed, setFailed] = useState(false);
+  const handleVerify = useCallback((token: string) => {
+    if (isDevelopment) console.log("captcha token received", Boolean(token));
+    onVerify(token);
+  }, [isDevelopment, onVerify]);
   const renderCaptcha = useCallback(() => {
-    if (!enabled || !clientEnabled || !siteKey || rendered || failed || !window.grecaptcha) return;
+    if (!shouldMount || !siteKey || rendered || failed || !window.grecaptcha) return;
     try {
       widgetId.current = window.grecaptcha.render(id, {
         sitekey: siteKey,
-        callback: onVerify,
-        "expired-callback": () => onVerify(""),
-        "error-callback": () => onVerify(""),
+        callback: handleVerify,
+        "expired-callback": () => handleVerify(""),
+        "error-callback": () => handleVerify(""),
       });
       setRendered(true);
     } catch {
       setFailed(true);
-      onVerify("");
+      handleVerify("");
     }
-  }, [clientEnabled, enabled, failed, id, onVerify, rendered, siteKey]);
+  }, [failed, handleVerify, id, rendered, shouldMount, siteKey]);
 
   useEffect(() => {
-    if (!enabled || !clientEnabled) {
+    if (!shouldMount) {
       onVerify("");
       return;
     }
     if (!siteKey) onVerify("");
-  }, [clientEnabled, enabled, onVerify, siteKey]);
+  }, [onVerify, shouldMount, siteKey]);
+
+  useEffect(() => {
+    if (!isDevelopment) return;
+    console.log("reCAPTCHA diagnostics", {
+      componentMounted: true,
+      enabled,
+      nextPublicEnableRecaptcha: process.env.NEXT_PUBLIC_ENABLE_RECAPTCHA,
+      siteKeyPresent: Boolean(siteKey),
+    });
+    if (clientEnabled && !siteKey) console.error("reCAPTCHA site key missing");
+  }, [clientEnabled, enabled, isDevelopment, siteKey]);
 
   useEffect(() => {
     renderCaptcha();
@@ -48,9 +65,10 @@ export function CaptchaField({ onVerify, enabled = false, resetSignal = 0 }: { o
     } catch {
       setFailed(true);
     }
-    onVerify("");
-  }, [onVerify, resetSignal]);
+    handleVerify("");
+  }, [handleVerify, resetSignal]);
 
-  if (!enabled || !clientEnabled || !siteKey) return null;
-  return <><Script src="https://www.google.com/recaptcha/api.js?render=explicit" strategy="afterInteractive" onLoad={() => setReady(true)} onError={() => setFailed(true)} /><div id={id} className="recaptcha-box" /></>;
+  if (!shouldMount) return null;
+  if (!siteKey) return isDevelopment ? <p className="captcha-notice">reCAPTCHA site key missing</p> : null;
+  return <><Script src="https://www.google.com/recaptcha/api.js?render=explicit" strategy="afterInteractive" onLoad={() => setReady(true)} onReady={() => setReady(true)} onError={() => setFailed(true)} /><div id={id} className="recaptcha-box" /></>;
 }

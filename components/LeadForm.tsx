@@ -9,7 +9,8 @@ export function LeadForm({ recaptcha = false }: { recaptcha?: boolean }) {
   const [captcha, setCaptcha] = useState("");
   const [captchaReset, setCaptchaReset] = useState(0);
   const [error, setError] = useState("");
-  const captchaRequired = recaptcha && process.env.NEXT_PUBLIC_ENABLE_RECAPTCHA === "true" && Boolean(process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY?.trim());
+  const captchaEnabled = recaptcha && process.env.NEXT_PUBLIC_ENABLE_RECAPTCHA === "true";
+  const captchaRequired = captchaEnabled && Boolean(process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY?.trim());
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); setError("");
@@ -48,7 +49,7 @@ export function LeadForm({ recaptcha = false }: { recaptcha?: boolean }) {
       <div><label>Email<input name="email" autoComplete="email" type="email" placeholder="you@example.com" /></label><label>Plot location<input name="location" placeholder="Area, Bengaluru" /></label></div>
       <label>Plot size<input name="plotSize" placeholder="e.g. 30 × 40 or 1,200 sq.ft" /></label>
       <label>Tell us about your project<textarea name="message" rows={5} placeholder="Home, commercial space, interiors, preferred timeline..." /></label>
-      <CaptchaField enabled={captchaRequired} onVerify={setCaptcha} resetSignal={captchaReset} />
+      <CaptchaField enabled={captchaEnabled} onVerify={setCaptcha} resetSignal={captchaReset} />
       {error && <p className="form-error">{error}</p>}
       <button className="button primary form-submit" type="submit" onClick={showCaptchaRequired}>Request a consultation <ArrowRight size={18} /></button>
       <small>By submitting, you agree to be contacted by RS Construction about your inquiry.</small>
