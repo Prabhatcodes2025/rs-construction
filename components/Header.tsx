@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Menu, MessageCircle, Phone, X } from "lucide-react";
+import { ChevronDown, Menu, MessageCircle, Phone, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { Logo } from "./Logo";
@@ -9,6 +9,14 @@ import { Logo } from "./Logo";
 const links = [
   ["Home", "/"], ["About Us", "/about"], ["Management Team", "/management"],
   ["Services", "/services"], ["Packages", "/packages"], ["Projects", "/projects"], ["Contact Us", "/contact"],
+];
+const interiorLinks = [
+  ["Complete Home Interiors", "/interiors#interior-services"],
+  ["Modular Kitchens", "/interiors#interior-services"],
+  ["Living Room Interiors", "/interiors#interior-portfolio"],
+  ["Bedroom Interiors", "/interiors#interior-portfolio"],
+  ["Wardrobes & Storage", "/interiors#interior-services"],
+  ["Commercial Interiors", "/interiors#interior-portfolio"],
 ];
 
 export function Header({ whatsapp = "https://wa.me/919901567272" }: { whatsapp?: string }) {
@@ -39,7 +47,12 @@ export function Header({ whatsapp = "https://wa.me/919901567272" }: { whatsapp?:
         <Logo />
         <Link className="mobile-touch-cta" href="/contact">Get in touch</Link>
         <nav className={open ? "nav-links open" : "nav-links"}>
-          {links.map(([label, href]) => <Link className={pathname === href ? "active" : ""} key={href} href={href} onClick={() => setOpen(false)}>{label}</Link>)}
+          {links.slice(0, 4).map(([label, href]) => <Link className={pathname === href ? "active" : ""} key={href} href={href} onClick={() => setOpen(false)}>{label}</Link>)}
+          <div className={`nav-dropdown ${pathname === "/interiors" ? "active" : ""}`}>
+            <Link href="/interiors" onClick={() => setOpen(false)}>Interiors <ChevronDown size={14} /></Link>
+            <div className="nav-dropdown-menu">{interiorLinks.map(([label, href]) => <Link key={label} href={href} onClick={() => setOpen(false)}>{label}</Link>)}</div>
+          </div>
+          {links.slice(4).map(([label, href]) => <Link className={pathname === href ? "active" : ""} key={href} href={href} onClick={() => setOpen(false)}>{label}</Link>)}
           <a className="nav-whatsapp" href={whatsapp}><MessageCircle size={16} /> WhatsApp</a>
           <Link className="nav-cta" href="/contact"><Phone size={15} /> Get free estimate</Link>
         </nav>
