@@ -1,21 +1,39 @@
 import Link from "next/link";
-import { ArrowUpRight, Mail, MapPin, Phone } from "lucide-react";
+import { ArrowUpRight, Facebook, Instagram, Linkedin, Mail, MapPin, Phone, Twitter } from "lucide-react";
 import { Logo } from "./Logo";
 import { getSiteData } from "@/lib/store";
 
+const socialLinks = [
+  { label: "Visit RS Construction on LinkedIn", href: "https://www.linkedin.com/company/135156628/", Icon: Linkedin },
+  { label: "Visit RS Construction on Instagram", href: "https://www.instagram.com/rsconstructionproject?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==", Icon: Instagram },
+  { label: "Visit RS Construction on Facebook", href: "https://www.facebook.com/profile.php?id=61591407560481", Icon: Facebook },
+  { label: "Visit RS Construction on X", href: "https://x.com/BuildWithRS", Icon: Twitter },
+];
+
 export async function Footer() {
-  const data=await getSiteData(); const settings=(data.settings||{}) as Record<string,string>;
+  const data = await getSiteData();
+  const settings = (data.settings || {}) as Record<string, string>;
   const email = settings.email || "rsconstruction2027@gmail.com";
   const creditLinkStyle = { color: "#ff9b58", fontWeight: 850, textDecoration: "underline", textUnderlineOffset: 4 } as const;
   return (
     <footer className="footer">
       <div className="footer-grid shell">
-        <div><Logo light /><p>Precision-built homes, commercial spaces and interiors—delivered with clarity at every stage.</p></div>
+        <div>
+          <Logo light />
+          <p>Precision-built homes, commercial spaces and interiors—delivered with clarity at every stage.</p>
+          <div className="footer-socials" aria-label="RS Construction social media">
+            {socialLinks.map(({ label, href, Icon }) => (
+              <a key={label} href={href} target="_blank" rel="noopener noreferrer" aria-label={label}>
+                <Icon aria-hidden="true" />
+              </a>
+            ))}
+          </div>
+        </div>
         <div><h4>Explore</h4><Link href="/services">Services</Link><Link href="/interiors">Complete Interiors</Link><Link href="/interiors#interior-services">Modular Kitchens</Link><Link href="/interiors#interior-portfolio">Interior Designs</Link><Link href="/packages">Packages</Link><Link href="/projects">Projects</Link><Link href="/about">Our story</Link></div>
-        <div><h4>Contact</h4><a href={`tel:${String(settings.phone||"+919901567272").replace(/\s/g,"")}`}><Phone size={16} /> {settings.phone||"+91 99015 67272"}</a><a href={`mailto:${email}`}><Mail size={16} /> <span style={{display:"inline-flex",flexDirection:"column",alignItems:"flex-start",gap:2,marginBottom:0}}><small>Email our team</small>{email}</span></a><a href={settings.map||"https://share.google/YoghYTG0lBF0TiA2O"}><MapPin size={16} /> {settings.address||"14, 1st Main Rd, Rahmath Nagar, RT Nagar, Bengaluru 560032"}</a></div>
+        <div><h4>Contact</h4><a href={`tel:${String(settings.phone || "+919901567272").replace(/\s/g, "")}`}><Phone size={16} /> {settings.phone || "+91 99015 67272"}</a><a href={`mailto:${email}`}><Mail size={16} /> <span style={{ display: "inline-flex", flexDirection: "column", alignItems: "flex-start", gap: 2, marginBottom: 0 }}><small>Email our team</small>{email}</span></a><a href={settings.map || "https://share.google/YoghYTG0lBF0TiA2O"}><MapPin size={16} /> {settings.address || "14, 1st Main Rd, Rahmath Nagar, RT Nagar, Bengaluru 560032"}</a></div>
         <div><h4>Start a project</h4><p>Tell us about your plot and vision. We’ll help you plan the next move.</p><Link className="text-link" href="/contact">Book consultation <ArrowUpRight size={17} /></Link></div>
       </div>
-      <div className="footer-bottom shell"><span>© 2026 RS Construction</span><span>Building Excellence. Delivering Trust.<span style={{display:"block",marginTop:8,marginBottom:0,textTransform:"none",letterSpacing:0,color:"#8fa0ae"}}>Designed and Developed by <a href="https://growwithclickmyze.com/" style={creditLinkStyle}>Clickymyze</a> <a href="https://growwithclickmyze.com/" style={{...creditLinkStyle,fontWeight:750,marginLeft:8}}>https://growwithclickmyze.com/</a></span></span></div>
+      <div className="footer-bottom shell"><span>© 2026 RS Construction</span><span>Building Excellence. Delivering Trust.<span style={{ display: "block", marginTop: 8, marginBottom: 0, textTransform: "none", letterSpacing: 0, color: "#8fa0ae" }}>Designed and Developed by <a href="https://growwithclickmyze.com/" style={creditLinkStyle}>Clickymyze</a> <a href="https://growwithclickmyze.com/" style={{ ...creditLinkStyle, fontWeight: 750, marginLeft: 8 }}>https://growwithclickmyze.com/</a></span></span></div>
     </footer>
   );
 }
