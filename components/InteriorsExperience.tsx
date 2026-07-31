@@ -9,7 +9,7 @@ import { interiorData, type InteriorCard } from "@/data/interiors";
 function DesignRail({ cards, className = "" }: { cards: InteriorCard[]; className?: string }) {
   const rail = useRef<HTMLDivElement>(null);
   const move = (direction: number) => rail.current?.scrollBy({ left: direction * Math.min(rail.current.clientWidth * .86, 820), behavior: "smooth" });
-  return <div className={`interior-rail-wrap ${className}`}><div className="interior-rail-controls"><button type="button" onClick={() => move(-1)} aria-label="Previous designs"><ArrowLeft /></button><button type="button" onClick={() => move(1)} aria-label="Next designs"><ArrowRight /></button></div><div className="interior-rail" ref={rail} tabIndex={0}>{cards.map(card => <article className="design-card" key={card.title}><div><Image src={card.image} alt={`${card.title} interior design inspiration`} fill sizes="(max-width: 700px) 86vw, 420px" /></div>{card.label && <span>{card.label}</span>}<h3>{card.title}</h3>{card.meta && <small>{card.meta}</small>}<p>{card.description}</p></article>)}</div></div>;
+  return <div className={`interior-rail-wrap ${className}`}><div className="interior-rail-controls"><button type="button" onClick={() => move(-1)} aria-label="Previous designs"><ArrowLeft /></button><button type="button" onClick={() => move(1)} aria-label="Next designs"><ArrowRight /></button></div><div className="interior-rail" ref={rail} tabIndex={0}>{cards.map(card => <article className="design-card" key={card.title}><div><Image src={card.image} alt={card.alt} fill sizes="(max-width: 700px) 86vw, 420px" /></div>{card.label && <span>{card.label}</span>}<h3>{card.title}</h3>{card.meta && <small>{card.meta}</small>}<p>{card.description}</p></article>)}</div></div>;
 }
 
 function Portfolio() {
@@ -25,8 +25,8 @@ function Portfolio() {
   }, [open]);
   return <>
     <div className="interior-tabs" role="tablist" aria-label="Filter interior portfolio">{filters.map(filter => <button role="tab" aria-selected={active === filter} className={active === filter ? "active" : ""} key={filter} onClick={() => setActive(filter)}>{filter}</button>)}</div>
-    <div className="interior-portfolio">{projects.map((project, index) => <button className="interior-project" key={project[0]} onClick={() => setOpen(index)} aria-label={`Open ${project[0]} gallery image`}><span className="interior-project-image"><Image src={project[5]} alt={`${project[0]} ${project[2]} concept`} fill sizes="(max-width: 700px) 100vw, 50vw" /></span><span className="interior-project-copy"><small>{project[2]} · {project[4]}</small><strong>{project[0]}</strong><em>{project[1]} · {project[3]}</em></span></button>)}</div>
-    {open !== null && <div className="interior-lightbox" role="dialog" aria-modal="true" aria-label={projects[open][0]} onClick={() => setOpen(null)}><button autoFocus aria-label="Close gallery" onClick={() => setOpen(null)}><X /></button><div onClick={event => event.stopPropagation()}><Image src={projects[open][5]} alt={`${projects[open][0]} enlarged interior concept`} fill sizes="95vw" /><span><strong>{projects[open][0]}</strong><small>{projects[open][1]} · {projects[open][2]} · {projects[open][3]}</small></span></div></div>}
+    <div className="interior-portfolio">{projects.map((project, index) => <button className="interior-project" key={project[0]} onClick={() => setOpen(index)} aria-label={`Open ${project[0]} gallery image`}><span className="interior-project-image"><Image src={project[5]} alt={project[6]} fill sizes="(max-width: 700px) 100vw, 50vw" /></span><span className="interior-project-copy"><small>{project[2]} · {project[4]}</small><strong>{project[0]}</strong><em>{project[1]} · {project[3]}</em></span></button>)}</div>
+    {open !== null && <div className="interior-lightbox" role="dialog" aria-modal="true" aria-label={projects[open][0]} onClick={() => setOpen(null)}><button autoFocus aria-label="Close gallery" onClick={() => setOpen(null)}><X /></button><div onClick={event => event.stopPropagation()}><Image src={projects[open][5]} alt={projects[open][6]} fill sizes="95vw" /><span><strong>{projects[open][0]}</strong><small>{projects[open][1]} · {projects[open][2]} · {projects[open][3]}</small></span></div></div>}
   </>;
 }
 
@@ -43,12 +43,12 @@ function Estimator({ phone }: { phone: string }) {
 }
 
 export function InteriorsExperience({ phone, whatsapp }: { phone: string; whatsapp: string }) {
-  const spaces = interiorData.spaceSaving.map(([title, description, image]) => ({ title, description, image }));
+  const spaces = interiorData.spaceSaving.map(([title, description, image, alt]) => ({ title, description, image, alt }));
   return (
     <>
       <section className="section interior-trust"><div className="shell">{interiorData.trust.map((item, index) => <div key={item}><span>0{index + 1}</span><Check /><strong>{item}</strong></div>)}</div></section>
 
-      <section className="section blueprint" id="interior-services"><div className="shell"><div className="section-heading split"><div><span className="eyebrow">Complete interior services</span><h2>Everything your space needs. Under one roof.</h2></div><p>Design, modular solutions and coordinated site work brought together in one clear scope.</p></div><div className="interior-service-grid">{interiorData.services.map(card => <article key={card.title}><div><Image src={card.image} alt={`${card.title} by RS Interiors`} fill sizes="(max-width: 700px) 100vw, 33vw" /></div><span>{card.label}</span><h3>{card.title}</h3><p>{card.description}</p><a href="#interior-portfolio">Explore Designs <ArrowRight /></a></article>)}</div></div></section>
+      <section className="section blueprint" id="interior-services"><div className="shell"><div className="section-heading split"><div><span className="eyebrow">Complete interior services</span><h2>Everything your space needs. Under one roof.</h2></div><p>Design, modular solutions and coordinated site work brought together in one clear scope.</p></div><div className="interior-service-grid">{interiorData.services.map(card => <article key={card.title}><div><Image src={card.image} alt={card.alt} fill sizes="(max-width: 700px) 100vw, 33vw" /></div><span>{card.label}</span><h3>{card.title}</h3><p>{card.description}</p><a href="#interior-portfolio">Explore Designs <ArrowRight /></a></article>)}</div></div></section>
 
       <section className="section dark-section"><div className="shell"><div className="section-heading split"><div><span className="eyebrow light">Space-smart design</span><h2>Smart ideas that make every square foot work harder.</h2></div><p>Thoughtful furniture and storage strategies help rooms adapt without feeling crowded.</p></div><DesignRail cards={spaces} /></div></section>
 

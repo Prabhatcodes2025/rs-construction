@@ -60,7 +60,7 @@ export default async function InteriorsPage() {
     <>
       <section className="interiors-hero">
         <div className="interiors-hero-image">
-          <Image src={interiorData.hero.image} alt="Warm contemporary living room interior with custom furniture and layered lighting" fill priority sizes="(max-width: 980px) 100vw, 56vw" />
+          <Image src={interiorData.hero.image} alt={interiorData.hero.alt} fill priority sizes="(max-width: 980px) 100vw, 56vw" />
           <div className="interiors-hero-overlay" />
         </div>
         <div className="interiors-hero-content blueprint">
