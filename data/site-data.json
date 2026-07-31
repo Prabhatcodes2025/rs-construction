@@ -59,7 +59,39 @@
         "Flooring": "₹50/sft",
         "Paint": "Tractor",
         "Electrical": "Standard"
-      }
+      },
+      "gstText": "Incl. GST",
+      "cities": [
+        "Bengaluru",
+        "Mysuru",
+        "Chennai",
+        "Hyderabad",
+        "Pune"
+      ],
+      "details": {
+        "Structure": "Steel: Kamdhenu",
+        "Kitchen": "Details can be updated from admin panel.",
+        "Bathroom": "Details can be updated from admin panel.",
+        "Doors & Windows": "Windows: Aluminium",
+        "Painting": "Paint: Tractor",
+        "Flooring": "Flooring allowance: ₹50/sft",
+        "Electrical": "Electrical specification: Standard",
+        "Miscellaneous": "Details can be updated from admin panel."
+      },
+      "categoryTitles": {
+        "Structure": "Structure",
+        "Kitchen": "Kitchen",
+        "Bathroom": "Bathroom",
+        "Doors & Windows": "Doors & Windows",
+        "Painting": "Painting",
+        "Flooring": "Flooring",
+        "Electrical": "Electrical",
+        "Miscellaneous": "Miscellaneous"
+      },
+      "ctaText": "Talk To Our Expert",
+      "displayOrder": 1,
+      "active": true,
+      "highlighted": false
     },
     {
       "id": "classic",
@@ -73,7 +105,39 @@
         "Flooring": "₹100/sft",
         "Paint": "Tractor Shyne",
         "Electrical": "Premium"
-      }
+      },
+      "gstText": "Incl. GST",
+      "cities": [
+        "Bengaluru",
+        "Mysuru",
+        "Chennai",
+        "Hyderabad",
+        "Pune"
+      ],
+      "details": {
+        "Structure": "Steel: Indus",
+        "Kitchen": "Details can be updated from admin panel.",
+        "Bathroom": "Details can be updated from admin panel.",
+        "Doors & Windows": "Windows: UPVC",
+        "Painting": "Paint: Tractor Shyne",
+        "Flooring": "Flooring allowance: ₹100/sft",
+        "Electrical": "Electrical specification: Premium",
+        "Miscellaneous": "Details can be updated from admin panel."
+      },
+      "categoryTitles": {
+        "Structure": "Structure",
+        "Kitchen": "Kitchen",
+        "Bathroom": "Bathroom",
+        "Doors & Windows": "Doors & Windows",
+        "Painting": "Painting",
+        "Flooring": "Flooring",
+        "Electrical": "Electrical",
+        "Miscellaneous": "Miscellaneous"
+      },
+      "ctaText": "Talk To Our Expert",
+      "displayOrder": 2,
+      "active": true,
+      "highlighted": false
     },
     {
       "id": "premium",
@@ -87,7 +151,39 @@
         "Flooring": "₹140/sft",
         "Paint": "Apcolite",
         "Electrical": "Premium+"
-      }
+      },
+      "gstText": "Incl. GST",
+      "cities": [
+        "Bengaluru",
+        "Mysuru",
+        "Chennai",
+        "Hyderabad",
+        "Pune"
+      ],
+      "details": {
+        "Structure": "Steel: Indus",
+        "Kitchen": "Details can be updated from admin panel.",
+        "Bathroom": "Details can be updated from admin panel.",
+        "Doors & Windows": "Windows: Premium UPVC",
+        "Painting": "Paint: Apcolite",
+        "Flooring": "Flooring allowance: ₹140/sft",
+        "Electrical": "Electrical specification: Premium+",
+        "Miscellaneous": "Details can be updated from admin panel."
+      },
+      "categoryTitles": {
+        "Structure": "Structure",
+        "Kitchen": "Kitchen",
+        "Bathroom": "Bathroom",
+        "Doors & Windows": "Doors & Windows",
+        "Painting": "Painting",
+        "Flooring": "Flooring",
+        "Electrical": "Electrical",
+        "Miscellaneous": "Miscellaneous"
+      },
+      "ctaText": "Talk To Our Expert",
+      "displayOrder": 3,
+      "active": true,
+      "highlighted": true
     },
     {
       "id": "royale",
@@ -101,7 +197,39 @@
         "Flooring": "₹160/sft",
         "Paint": "Royale Luxury",
         "Electrical": "Luxury"
-      }
+      },
+      "gstText": "Incl. GST",
+      "cities": [
+        "Bengaluru",
+        "Mysuru",
+        "Chennai",
+        "Hyderabad",
+        "Pune"
+      ],
+      "details": {
+        "Structure": "Steel: Indus",
+        "Kitchen": "Details can be updated from admin panel.",
+        "Bathroom": "Details can be updated from admin panel.",
+        "Doors & Windows": "Windows: Luxury UPVC",
+        "Painting": "Paint: Royale Luxury",
+        "Flooring": "Flooring allowance: ₹160/sft",
+        "Electrical": "Electrical specification: Luxury",
+        "Miscellaneous": "Details can be updated from admin panel."
+      },
+      "categoryTitles": {
+        "Structure": "Structure",
+        "Kitchen": "Kitchen",
+        "Bathroom": "Bathroom",
+        "Doors & Windows": "Doors & Windows",
+        "Painting": "Painting",
+        "Flooring": "Flooring",
+        "Electrical": "Electrical",
+        "Miscellaneous": "Miscellaneous"
+      },
+      "ctaText": "Talk To Our Expert",
+      "displayOrder": 4,
+      "active": true,
+      "highlighted": false
     }
   ],
   "testimonials": [
@@ -162,6 +290,17 @@
       "name": "Rakesh R",
       "role": "General Manager — Operations & Business Development",
       "image": "/images/rakesh-profile.png"
+    },
+    {
+      "id": "saara-fatima",
+      "name": "Saara Fatima",
+      "role": "Interior Designer",
+      "image": "/images/saara-fatima-interior-designer.jpg",
+      "imageFit": "contain",
+      "poster": true,
+      "bio": "A passionate interior designer dedicated to creating beautiful, functional and inspiring spaces with creativity, practicality and careful attention to detail.",
+      "instagram": "https://www.instagram.com/rsconstructionproject?igsh=dzNpMTl1bHBhNjVt",
+      "displayOrder": 3
     }
   ],
   "hero": {
@@ -187,5 +326,424 @@
   "seo": {
     "homeTitle": "RS Construction | Premium Home Builders in Bengaluru",
     "homeDescription": "Premium residential and commercial construction, architecture, interiors and turnkey project delivery in Bengaluru."
-  }
+  },
+  "whyUs": [
+    {
+      "id": "why-1",
+      "parameter": "Transparent Project Tracking",
+      "rsValue": "Check",
+      "othersValue": "Cross",
+      "displayOrder": 1,
+      "active": true
+    },
+    {
+      "id": "why-2",
+      "parameter": "Money Safety & Stage-Wise Payment",
+      "rsValue": "Check",
+      "othersValue": "Cross",
+      "displayOrder": 2,
+      "active": true
+    },
+    {
+      "id": "why-3",
+      "parameter": "Multiple Design Options",
+      "rsValue": "Check",
+      "othersValue": "Cross",
+      "displayOrder": 3,
+      "active": true
+    },
+    {
+      "id": "why-4",
+      "parameter": "Quality Checks at Every Stage",
+      "rsValue": "Check",
+      "othersValue": "Cross",
+      "displayOrder": 4,
+      "active": true
+    },
+    {
+      "id": "why-5",
+      "parameter": "Cost Overrun Protection",
+      "rsValue": "Check",
+      "othersValue": "Cross",
+      "displayOrder": 5,
+      "active": true
+    },
+    {
+      "id": "why-6",
+      "parameter": "Experienced Project Team",
+      "rsValue": "Check",
+      "othersValue": "Cross",
+      "displayOrder": 6,
+      "active": true
+    },
+    {
+      "id": "why-7",
+      "parameter": "On-Time Delivery Commitment",
+      "rsValue": "Check",
+      "othersValue": "Cross",
+      "displayOrder": 7,
+      "active": true
+    },
+    {
+      "id": "why-8",
+      "parameter": "End-to-End Construction Support",
+      "rsValue": "Check",
+      "othersValue": "Cross",
+      "displayOrder": 8,
+      "active": true
+    }
+  ],
+  "interiors": [
+    {
+      "id": "interior-hero",
+      "section": "Hero",
+      "category": "Complete Home",
+      "title": "Interiors Hero",
+      "image": "/images/interiors/living-open-kitchen.jpeg",
+      "alt": "Luxury open-plan living room with marble TV wall and adjoining kitchen",
+      "description": "From intelligent space planning and modular kitchens to elegant living rooms and complete home interiors, RS Construction delivers thoughtfully designed spaces with one accountable team.",
+      "displayOrder": 1,
+      "active": true
+    },
+    {
+      "title": "Living & Dining Interiors",
+      "label": "Social spaces",
+      "image": "/images/interiors/luxury-living-room.jpeg",
+      "alt": "Luxury living room with curved wooden TV wall and indoor greenery",
+      "description": "TV units, feature walls, crockery units, display storage, partitions, lighting and customised furniture.",
+      "id": "interior-service-1",
+      "section": "Main Services",
+      "category": "Living Room",
+      "displayOrder": 1,
+      "active": true
+    },
+    {
+      "title": "Modular Kitchens",
+      "label": "Made for daily life",
+      "image": "/images/interiors/grey-island-kitchen.jpeg",
+      "alt": "Modern grey island kitchen with marble backsplash and pendant lighting",
+      "description": "L-shaped, U-shaped, parallel, island and straight modular kitchens with intelligent storage solutions.",
+      "id": "interior-service-2",
+      "section": "Main Services",
+      "category": "Kitchen",
+      "displayOrder": 2,
+      "active": true
+    },
+    {
+      "title": "Bedroom",
+      "label": "Personal retreats",
+      "image": "/images/interiors/premium-master-bedroom.jpeg",
+      "alt": "Premium master bedroom with upholstered bed and sculpted ceiling lighting",
+      "description": "Wardrobes, beds with storage, study units, dressing areas, side tables, lighting and customised finishes.",
+      "id": "interior-service-3",
+      "section": "Main Services",
+      "category": "Bedroom",
+      "displayOrder": 3,
+      "active": true
+    },
+    {
+      "title": "Wardrobes & Storage",
+      "label": "Organised living",
+      "image": "/images/interiors/luxury-walk-in-wardrobe.jpeg",
+      "alt": "Luxury walk-in wardrobe with display shelves and central island",
+      "description": "Sliding wardrobes, walk-in wardrobes, loft storage, concealed storage and customised organisers.",
+      "id": "interior-service-4",
+      "section": "Main Services",
+      "category": "Wardrobe",
+      "displayOrder": 4,
+      "active": true
+    },
+    {
+      "title": "False Ceiling & Lighting",
+      "label": "Layered ambience",
+      "image": "/images/interiors/stone-wall-living-room.jpeg",
+      "alt": "Premium living room with layered ceiling lighting and stone TV feature wall",
+      "description": "Layered ceilings, ambient lighting, task lighting, accent lighting and decorative electrical planning.",
+      "id": "interior-service-5",
+      "section": "Main Services",
+      "category": "Living Room",
+      "displayOrder": 5,
+      "active": true
+    },
+    {
+      "title": "Home Improvement",
+      "label": "Careful upgrades",
+      "image": "/images/interiors/living-open-kitchen.jpeg",
+      "alt": "Complete open-plan living room renovation with integrated lighting and kitchen",
+      "description": "Painting, flooring, bathroom upgrades, electrical work, plumbing, civil modifications and deep cleaning.",
+      "id": "interior-service-6",
+      "section": "Main Services",
+      "category": "Living Room",
+      "displayOrder": 6,
+      "active": true
+    },
+    {
+      "id": "interior-storage-1",
+      "section": "Space-Saving",
+      "category": "Storage",
+      "title": "Space-Smart Bunk Bedroom",
+      "description": "Two comfortable sleeping zones arranged vertically to preserve open floor area.",
+      "image": "/images/interiors/kids-bunk-bedroom.jpeg",
+      "alt": "Space-saving kids bedroom with illuminated bunk beds and staircase storage",
+      "displayOrder": 1,
+      "active": true
+    },
+    {
+      "id": "interior-storage-2",
+      "section": "Space-Saving",
+      "category": "Wardrobe",
+      "title": "Hidden Dressing Unit",
+      "description": "An integrated dressing position composed neatly between two glass-front wardrobes.",
+      "image": "/images/interiors/wardrobe-dressing-mirror.jpeg",
+      "alt": "Integrated dressing unit between glass wardrobes with illuminated mirror",
+      "displayOrder": 2,
+      "active": true
+    },
+    {
+      "id": "interior-storage-3",
+      "section": "Space-Saving",
+      "category": "Wardrobe",
+      "title": "Floor-to-Ceiling Wardrobe",
+      "description": "Full-height display storage paired with a useful central folding and storage island.",
+      "image": "/images/interiors/glass-wardrobe-island.jpeg",
+      "alt": "Floor-to-ceiling glass wardrobe with integrated lighting and storage island",
+      "displayOrder": 3,
+      "active": true
+    },
+    {
+      "id": "interior-storage-4",
+      "section": "Space-Saving",
+      "category": "Kitchen",
+      "title": "Kitchen Pantry Pull-Out",
+      "description": "Easy-access tall storage for groceries, jars and everyday essentials.",
+      "image": "/images/interiors/pull-out-pantry.jpeg",
+      "alt": "White kitchen with open walk-in pantry and pull-out storage racks",
+      "displayOrder": 4,
+      "active": true
+    },
+    {
+      "id": "interior-storage-5",
+      "section": "Space-Saving",
+      "category": "Storage",
+      "title": "Storage Bed",
+      "description": "Useful concealed capacity built below a comfortable upholstered bed platform.",
+      "image": "/images/interiors/lift-up-storage-bed.jpeg",
+      "alt": "Luxury upholstered bed lifted upward to reveal concealed storage",
+      "displayOrder": 5,
+      "active": true
+    },
+    {
+      "id": "interior-storage-6",
+      "section": "Space-Saving",
+      "category": "Storage",
+      "title": "TV Unit with Concealed Storage",
+      "description": "Media, cables and daily clutter kept behind a composed full-height elevation.",
+      "image": "/images/interiors/concealed-tv-unit.jpeg",
+      "alt": "Modern dark TV unit with concealed cabinets and illuminated display shelves",
+      "displayOrder": 6,
+      "active": true
+    },
+    {
+      "id": "interior-storage-7",
+      "section": "Space-Saving",
+      "category": "Storage",
+      "title": "Under-Stair Storage",
+      "description": "Custom cabinets and display shelves fitted into otherwise unused volume.",
+      "image": "/images/interiors/under-stair-storage.jpeg",
+      "alt": "Under-stair storage cabinets with display shelves and warm lighting",
+      "displayOrder": 7,
+      "active": true
+    },
+    {
+      "id": "interior-storage-8",
+      "section": "Space-Saving",
+      "category": "Storage",
+      "title": "Foldable Study Desk",
+      "description": "A compact space-saving workstation paired with high-capacity mobile book storage.",
+      "image": "/images/interiors/study-storage-unit.jpeg",
+      "alt": "Space-saving study desk with pegboard and pull-out book storage",
+      "displayOrder": 8,
+      "active": true
+    },
+    {
+      "id": "interior-storage-9",
+      "section": "Space-Saving",
+      "category": "Storage",
+      "title": "Multi-Functional Crockery Unit",
+      "description": "Display, serving and closed storage combined in one dining feature.",
+      "image": "/images/interiors/crockery-display-unit.jpeg",
+      "alt": "Luxury crockery display unit with glass cabinets and illuminated shelves",
+      "displayOrder": 9,
+      "active": true
+    },
+    {
+      "title": "Kitchen with Breakfast Counter",
+      "image": "/images/interiors/breakfast-counter-kitchen.jpeg",
+      "alt": "Open modular kitchen framed by an illuminated arch with breakfast counter seating",
+      "description": "A welcoming open layout with practical counter seating for quick meals.",
+      "id": "interior-kitchen-1",
+      "section": "Kitchen",
+      "category": "Kitchen",
+      "displayOrder": 1,
+      "active": true
+    },
+    {
+      "title": "Island Kitchen",
+      "image": "/images/interiors/wooden-island-kitchen.jpeg",
+      "alt": "Premium island kitchen with stone worktop and four counter stools",
+      "description": "Warm timber cabinetry arranged around a generous central preparation island.",
+      "id": "interior-kitchen-2",
+      "section": "Kitchen",
+      "category": "Kitchen",
+      "displayOrder": 2,
+      "active": true
+    },
+    {
+      "title": "Parallel Kitchen",
+      "image": "/images/interiors/parallel-kitchen.jpeg",
+      "alt": "Bright parallel kitchen with marble backsplash and glass display cabinets",
+      "description": "Two long work runs balance preparation, cooking, cleaning and storage.",
+      "id": "interior-kitchen-3",
+      "section": "Kitchen",
+      "category": "Kitchen",
+      "displayOrder": 3,
+      "active": true
+    },
+    {
+      "title": "Straight Kitchen",
+      "image": "/images/interiors/straight-kitchen-dining.jpeg",
+      "alt": "Modern straight kitchen with wooden upper cabinets and dining table",
+      "description": "A clean single-wall arrangement with an adjacent everyday dining zone.",
+      "id": "interior-kitchen-4",
+      "section": "Kitchen",
+      "category": "Kitchen",
+      "displayOrder": 4,
+      "active": true
+    },
+    {
+      "title": "U-Shaped Kitchen",
+      "image": "/images/interiors/grey-island-kitchen.jpeg",
+      "alt": "Modern U-shaped kitchen with extensive grey cabinetry and marble worktops",
+      "description": "Three connected work runs provide clear circulation and extensive cabinetry.",
+      "id": "interior-kitchen-5",
+      "section": "Kitchen",
+      "category": "Kitchen",
+      "displayOrder": 5,
+      "active": true
+    },
+    {
+      "title": "L-Shaped Kitchen",
+      "image": "/images/interiors/l-shaped-kitchen.jpeg",
+      "alt": "Luxury L-shaped modular kitchen with glass cabinets and integrated appliances",
+      "description": "Efficient corner planning with bright worktops and coordinated storage.",
+      "id": "interior-kitchen-6",
+      "section": "Kitchen",
+      "category": "Kitchen",
+      "displayOrder": 6,
+      "active": true
+    },
+    {
+      "title": "Luxury Living Room",
+      "meta": "Living room",
+      "image": "/images/interiors/luxury-living-room.jpeg",
+      "alt": "Luxury living room with curved wooden TV wall and green feature panel",
+      "description": "Soft seating, warm timber and greenery create a welcoming premium ambience.",
+      "id": "interior-living-1",
+      "section": "Living Room",
+      "category": "Living Room",
+      "displayOrder": 1,
+      "active": true
+    },
+    {
+      "title": "Contemporary Living Room",
+      "meta": "Complete home",
+      "image": "/images/interiors/living-open-kitchen.jpeg",
+      "alt": "Contemporary living room with marble TV wall and adjoining open kitchen",
+      "description": "A spacious social zone composed around a large sectional and open kitchen.",
+      "id": "interior-living-2",
+      "section": "Living Room",
+      "category": "Living Room",
+      "displayOrder": 2,
+      "active": true
+    },
+    {
+      "title": "Living Room with Pooja Unit",
+      "meta": "Living + pooja",
+      "image": "/images/interiors/tv-unit-ganesh-pooja.jpeg",
+      "alt": "Living room TV unit with illuminated Ganesh mandir and pooja niche",
+      "description": "A composed TV elevation with a dedicated illuminated Ganesh pooja niche.",
+      "id": "interior-living-3",
+      "section": "Living Room",
+      "category": "Living Room",
+      "displayOrder": 3,
+      "active": true
+    },
+    {
+      "title": "Living Room with Display Storage",
+      "meta": "TV lounge",
+      "image": "/images/interiors/wooden-entertainment-wall.jpeg",
+      "alt": "Living room with full-height wooden entertainment wall and illuminated display storage",
+      "description": "An expansive media wall combining display storage, natural finishes and layered light.",
+      "id": "interior-living-4",
+      "section": "Living Room",
+      "category": "Living Room",
+      "displayOrder": 4,
+      "active": true
+    },
+    {
+      "title": "Master Bedroom",
+      "image": "/images/interiors/premium-master-bedroom.jpeg",
+      "alt": "Luxury master bedroom with upholstered headboard and sculpted ceiling lighting",
+      "description": "A calm master suite with generous proportions and softly layered illumination.",
+      "id": "interior-bedroom-1",
+      "section": "Bedroom",
+      "category": "Bedroom",
+      "displayOrder": 1,
+      "active": true
+    },
+    {
+      "title": "Kids’ Bedroom",
+      "image": "/images/interiors/kids-bedroom-study.jpeg",
+      "alt": "Kids bedroom with toy display shelves and integrated study desk",
+      "description": "Playful display storage and a practical study position support changing routines.",
+      "id": "interior-bedroom-2",
+      "section": "Bedroom",
+      "category": "Bedroom",
+      "displayOrder": 2,
+      "active": true
+    },
+    {
+      "title": "Guest Bedroom",
+      "image": "/images/interiors/wooden-headboard-bedroom.jpeg",
+      "alt": "Welcoming guest bedroom with wooden headboard and balanced bedside lighting",
+      "description": "Warm wood, upholstered panels and balanced lighting create a welcoming secondary bedroom.",
+      "id": "interior-bedroom-3",
+      "section": "Bedroom",
+      "category": "Bedroom",
+      "displayOrder": 3,
+      "active": true
+    },
+    {
+      "title": "Compact Bedroom",
+      "image": "/images/interiors/kids-bunk-bedroom.jpeg",
+      "alt": "Compact bedroom with space-saving bunk beds and storage stairs",
+      "description": "Vertical sleeping zones and stair storage make efficient use of a compact footprint.",
+      "id": "interior-bedroom-4",
+      "section": "Bedroom",
+      "category": "Bedroom",
+      "displayOrder": 4,
+      "active": true
+    },
+    {
+      "title": "Bedroom with Study Unit",
+      "image": "/images/interiors/bedroom-study-workstation.jpeg",
+      "alt": "Modern bedroom with computer workstation and wall-to-wall bookshelves",
+      "description": "A dedicated computer desk and book storage are integrated without crowding the bed.",
+      "id": "interior-bedroom-5",
+      "section": "Bedroom",
+      "category": "Bedroom",
+      "displayOrder": 5,
+      "active": true
+    }
+  ]
 }

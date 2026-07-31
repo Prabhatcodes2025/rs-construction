@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, Check, ChevronDown, MessageCircle, Phone, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { interiorData, type InteriorCard } from "@/data/interiors";
+import { interiorData, type EditableInteriorCard, type InteriorCard } from "@/data/interiors";
 
 function DesignRail({ cards, className = "" }: { cards: InteriorCard[]; className?: string }) {
   const rail = useRef<HTMLDivElement>(null);
@@ -42,21 +42,29 @@ function Estimator({ phone }: { phone: string }) {
   ].map(([label, options]) => <label key={label as string}>{label}<select defaultValue="" onChange={() => setReady(true)}><option value="" disabled>Select</option>{(options as string[]).map(option => <option key={option}>{option}</option>)}</select></label>)}<label>Carpet Area<input min="100" inputMode="numeric" type="number" placeholder="Area in sq.ft" onChange={() => setReady(true)} /></label></div><div className="interior-estimator-result"><span>Personalised estimate</span><strong>{ready ? "Estimated project range available after consultation" : "Plan scope before pricing"}</strong><p>Final pricing depends on measured area, selected scope, materials, finishes and site conditions.</p><a className="button primary" href={`tel:${phone.replace(/[^\d+]/g, "")}`}>Get My Detailed Estimate <ArrowRight /></a></div></div>;
 }
 
-export function InteriorsExperience({ phone, whatsapp }: { phone: string; whatsapp: string }) {
-  const spaces = interiorData.spaceSaving.map(([title, description, image, alt]) => ({ title, description, image, alt }));
+export function InteriorsExperience({ phone, whatsapp, interiorCards = [] }: { phone: string; whatsapp: string; interiorCards?: EditableInteriorCard[] }) {
+  const sectionCards = (section: EditableInteriorCard["section"], fallback: InteriorCard[]) => {
+    const saved = interiorCards.filter(card => card.section === section && card.active !== false).sort((a, b) => a.displayOrder - b.displayOrder);
+    return saved.length ? saved : fallback;
+  };
+  const services = sectionCards("Main Services", interiorData.services);
+  const spaces = sectionCards("Space-Saving", interiorData.spaceSaving.map(([title, description, image, alt]) => ({ title, description, image, alt })));
+  const kitchens = sectionCards("Kitchen", interiorData.kitchens);
+  const livingRooms = sectionCards("Living Room", interiorData.livingRooms);
+  const bedrooms = sectionCards("Bedroom", interiorData.bedrooms);
   return (
     <>
       <section className="section interior-trust"><div className="shell">{interiorData.trust.map((item, index) => <div key={item}><span>0{index + 1}</span><Check /><strong>{item}</strong></div>)}</div></section>
 
-      <section className="section blueprint" id="interior-services"><div className="shell"><div className="section-heading split"><div><span className="eyebrow">Complete interior services</span><h2>Everything your space needs. Under one roof.</h2></div><p>Design, modular solutions and coordinated site work brought together in one clear scope.</p></div><div className="interior-service-grid">{interiorData.services.map(card => <article key={card.title}><div><Image src={card.image} alt={card.alt} fill sizes="(max-width: 700px) 100vw, 33vw" /></div><span>{card.label}</span><h3>{card.title}</h3><p>{card.description}</p><a href="#interior-portfolio">Explore Designs <ArrowRight /></a></article>)}</div></div></section>
+      <section className="section blueprint" id="interior-services"><div className="shell"><div className="section-heading split"><div><span className="eyebrow">Complete interior services</span><h2>Everything your space needs. Under one roof.</h2></div><p>Design, modular solutions and coordinated site work brought together in one clear scope.</p></div><div className="interior-service-grid">{services.map(card => <article key={card.title}><div><Image src={card.image} alt={card.alt} fill sizes="(max-width: 700px) 100vw, 33vw" /></div><span>{card.label}</span><h3>{card.title}</h3><p>{card.description}</p><a href="#interior-portfolio">Explore Designs <ArrowRight /></a></article>)}</div></div></section>
 
       <section className="section dark-section"><div className="shell"><div className="section-heading split"><div><span className="eyebrow light">Space-smart design</span><h2>Smart ideas that make every square foot work harder.</h2></div><p>Thoughtful furniture and storage strategies help rooms adapt without feeling crowded.</p></div><DesignRail cards={spaces} /></div></section>
 
-      <section className="section interior-category"><div className="shell"><div className="section-heading split"><div><span className="eyebrow">Kitchen planning</span><h2>Modular kitchens designed for Indian homes.</h2></div><p>Our modular kitchens balance workflow, storage, durability and style while being customised around your available space and daily requirements.</p></div><DesignRail cards={interiorData.kitchens} /><a className="button dark category-cta" href="#interior-consultation">Plan My Kitchen <ArrowRight /></a></div></section>
+      <section className="section interior-category"><div className="shell"><div className="section-heading split"><div><span className="eyebrow">Kitchen planning</span><h2>Modular kitchens designed for Indian homes.</h2></div><p>Our modular kitchens balance workflow, storage, durability and style while being customised around your available space and daily requirements.</p></div><DesignRail cards={kitchens} /><a className="button dark category-cta" href="#interior-consultation">Plan My Kitchen <ArrowRight /></a></div></section>
 
-      <section className="section interior-category interior-category-dark"><div className="shell"><div className="section-heading split"><div><span className="eyebrow light">Living rooms</span><h2>Living spaces that make the right first impression.</h2></div><p>Seating, media, storage and lighting composed to feel welcoming from every angle.</p></div><DesignRail cards={interiorData.livingRooms} /><a className="button primary category-cta" href="#interior-consultation">Discuss Your Living Room <ArrowRight /></a></div></section>
+      <section className="section interior-category interior-category-dark"><div className="shell"><div className="section-heading split"><div><span className="eyebrow light">Living rooms</span><h2>Living spaces that make the right first impression.</h2></div><p>Seating, media, storage and lighting composed to feel welcoming from every angle.</p></div><DesignRail cards={livingRooms} /><a className="button primary category-cta" href="#interior-consultation">Discuss Your Living Room <ArrowRight /></a></div></section>
 
-      <section className="section interior-category"><div className="shell"><div className="section-heading split"><div><span className="eyebrow">Bedrooms</span><h2>Comfort, storage and style—thoughtfully combined.</h2></div><p>Personal spaces planned for easier routines, quieter rest and storage that belongs.</p></div><DesignRail cards={interiorData.bedrooms} /><a className="button dark category-cta" href="#interior-consultation">Meet an Interior Expert <ArrowRight /></a></div></section>
+      <section className="section interior-category"><div className="shell"><div className="section-heading split"><div><span className="eyebrow">Bedrooms</span><h2>Comfort, storage and style—thoughtfully combined.</h2></div><p>Personal spaces planned for easier routines, quieter rest and storage that belongs.</p></div><DesignRail cards={bedrooms} /><a className="button dark category-cta" href="#interior-consultation">Meet an Interior Expert <ArrowRight /></a></div></section>
 
       <section className="section blueprint"><div className="shell"><div className="section-heading centered"><span className="eyebrow">Scope at a glance</span><h2>What you get with RS Interiors</h2></div><div className="interior-inclusions">{interiorData.inclusions.map(([title, items], index) => <article key={title as string}><span>RS / 0{index + 1}</span><h3>{title as string}</h3><ul>{(items as string[]).map(item => <li key={item}><Check />{item}</li>)}</ul></article>)}</div></div></section>
 

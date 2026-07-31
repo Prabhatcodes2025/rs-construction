@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { Instagram } from "lucide-react";
 import { PageHero } from "@/components/PageHero";
 import { getSiteData } from "@/lib/store";
 
@@ -11,14 +12,15 @@ export const metadata = { title: "Management Team" };
 
 export default async function Management() {
   const data = await getSiteData();
-  const team = Array.isArray(data.team) && data.team.length ? data.team as Array<Record<string, unknown>> : fallback;
+  const team = (Array.isArray(data.team) && data.team.length ? data.team : fallback) as Array<Record<string, unknown>>;
   return <>
     <PageHero eyebrow="The people behind the work" title="Leadership with a site-level view." copy="Our leadership and technical teams combine business discipline, construction knowledge and a shared commitment to client trust." />
     <section className="section"><div className="shell">
-      <div className="executive-grid">{team.map(member => <article key={String(member.id || member.name)}>
-        <div><Image src={String(member.image || "/images/rakesh-profile.png")} alt={String(member.name)} fill sizes="(max-width: 800px) 100vw, 50vw" /></div>
+      <div className="executive-grid">{team.map(member => <article className={member.poster ? "team-poster-card" : ""} key={String(member.id || member.name)}>
+        <div><Image className={member.imageFit === "contain" ? "contain" : ""} src={String(member.image || "/images/rakesh-profile.png")} alt={member.name === "Saara Fatima" ? "Saara Fatima, Interior Designer at RS Construction" : String(member.name)} fill sizes="(max-width: 800px) 100vw, 50vw" /></div>
         <span>{String(member.role || "RS Construction team")}</span><h2>{String(member.name)}</h2>
         <p>{String(member.bio || "Construction leadership, client coordination and quality-focused delivery.")}</p>
+        {Boolean(member.instagram) && <a className="team-social-link" href={String(member.instagram)} target="_blank" rel="noopener noreferrer" aria-label={`${String(member.name)} on Instagram`}><Instagram />Instagram</a>}
       </article>)}</div>
     </div></section>
   </>;

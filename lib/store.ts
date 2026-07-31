@@ -2,6 +2,8 @@ import { promises as fs } from "fs";
 import path from "path";
 import { get, put } from "@vercel/blob";
 import { readLeadsFromSupabase, readSiteDataFromSupabase, saveLeadsToSupabase, saveLeadToSupabase, saveSiteDataToSupabase, supabaseConfigured } from "./supabase";
+import { managedMediaProvider } from "./media-storage";
+import { defaultInteriorCards } from "@/data/interiors";
 
 const dataDir = path.join(process.cwd(), "data");
 const sitePath = path.join(dataDir, "site-data.json");
@@ -25,6 +27,12 @@ const requiredWhyUs = [
   "Quality Checks at Every Stage", "Cost Overrun Protection", "Experienced Project Team",
   "On-Time Delivery Commitment", "End-to-End Construction Support",
 ].map((parameter, index) => ({ id: `why-${index + 1}`, parameter, rsValue: "Check", othersValue: "Cross", displayOrder: index + 1, active: true }));
+const requiredTeam = [{
+  id: "saara-fatima", name: "Saara Fatima", role: "Interior Designer",
+  image: "/images/saara-fatima-interior-designer.jpg", imageFit: "contain", poster: true,
+  bio: "A passionate interior designer dedicated to creating beautiful, functional and inspiring spaces with creativity, practicality and careful attention to detail.",
+  instagram: "https://www.instagram.com/rsconstructionproject?igsh=dzNpMTl1bHBhNjVt", displayOrder: 3,
+}];
 
 export type Lead = {
   id: string; createdAt: string; source: string; status: "New" | "Contacted" | "Converted" | "Closed";
@@ -64,14 +72,15 @@ async function writeBlobJson(pathname: string, value: unknown) {
 
 export function storageStatus() {
   return {
-    provider: supabaseConfigured() ? "Supabase" : useBlob() ? "Vercel Blob" : process.env.VERCEL ? "Database not connected" : "Local files",
+    provider: `${supabaseConfigured() ? "Supabase" : useBlob() ? "Vercel Blob" : process.env.VERCEL ? "Database not connected" : "Local files"} · Media: ${managedMediaProvider()}`,
     durable: supabaseConfigured() || useBlob() || !process.env.VERCEL,
   };
 }
 
 export async function getSiteData() {
   const bundled = await readJson<Record<string, unknown>>(sitePath, {});
-  const stored = supabaseConfigured() ? await readSiteDataFromSupabase(bundled) : useBlob() ? await readBlobJson(siteBlobPath, bundled) : bundled;
+  const storedData = supabaseConfigured() ? await readSiteDataFromSupabase(bundled) : useBlob() ? await readBlobJson(siteBlobPath, bundled) : bundled;
+  const stored = { ...bundled, ...storedData };
   const currentServices = Array.isArray(stored.services) ? stored.services as Array<Record<string, unknown>> : [];
   const services = requiredServices.map(required => ({ ...required, ...(currentServices.find(item => item.id === required.id) || {}), name: required.name }));
   const extras = currentServices.filter(item => !requiredServices.some(required => required.id === item.id));
@@ -101,7 +110,10 @@ export async function getSiteData() {
     };
   });
   const whyUs = Array.isArray(stored.whyUs) && stored.whyUs.length ? stored.whyUs : requiredWhyUs;
-  return { ...stored, services: [...services, ...extras], packages, whyUs } as Record<string, unknown>;
+  const interiors = Array.isArray(stored.interiors) && stored.interiors.length ? stored.interiors : defaultInteriorCards;
+  const currentTeam = Array.isArray(stored.team) ? stored.team as Array<Record<string, unknown>> : [];
+  const team = [...currentTeam, ...requiredTeam.filter(required => !currentTeam.some(member => member.id === required.id))];
+  return { ...stored, services: [...services, ...extras], packages, whyUs, interiors, team } as Record<string, unknown>;
 }
 export async function saveSiteData(data: Record<string, unknown>) {
   if (supabaseConfigured()) return saveSiteDataToSupabase(data);

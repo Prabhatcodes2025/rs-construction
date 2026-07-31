@@ -24,6 +24,7 @@ const navigation = [
   ["projects", "Projects", FolderKanban], ["packages", "Packages", Package],
   ["whyUs", "Why Us comparison", CheckCircle2],
   ["services", "Services", Wrench], ["team", "Team members", Users],
+  ["interiors", "Interior designs", ImageIcon],
   ["testimonials", "Testimonials", Star], ["hero", "Hero content", BriefcaseBusiness],
   ["gallery", "Gallery", ImageIcon], ["settings", "Contact details", Settings],
   ["seo", "SEO", Search],
@@ -89,7 +90,19 @@ const schemas: Record<string, Field[]> = {
     { key: "name", label: "Full name", required: true }, { key: "role", label: "Role / designation", required: true },
     { key: "image", label: "Profile image", type: "image", full: true },
     { key: "bio", label: "Short profile", type: "textarea", full: true },
+    { key: "instagram", label: "Instagram URL", full: true },
     { key: "displayOrder", label: "Display order", type: "number" },
+  ],
+  interiors: [
+    { key: "title", label: "Card title", required: true },
+    { key: "section", label: "Page section", type: "select", options: ["Hero", "Main Services", "Space-Saving", "Kitchen", "Living Room", "Bedroom"], required: true },
+    { key: "category", label: "Interior category", type: "select", options: ["Complete Home", "Kitchen", "Living Room", "Bedroom", "Wardrobe", "Storage"], required: true },
+    { key: "image", label: "Interior image", type: "image", required: true, full: true },
+    { key: "alt", label: "Image alt text", required: true, full: true },
+    { key: "description", label: "Card description", type: "textarea", full: true },
+    { key: "label", label: "Small label" }, { key: "meta", label: "Card metadata" },
+    { key: "displayOrder", label: "Display order", type: "number" },
+    { key: "active", label: "Visible on website", type: "checkbox" },
   ],
   testimonials: [
     { key: "name", label: "Client name", required: true }, { key: "location", label: "Location" },
@@ -120,7 +133,8 @@ const legacyDefaults: Record<string, Item> = {
   projects: { title: "", type: "Residential", category: "Ongoing", location: "", area: "", status: "Planning", completion: 0, stage: "Planning", expectedCompletion: "", description: "", highlights: "", materials: "", image: "/images/project-residence.png", gallery: [], ctaText: "Project enquiry", displayOrder: 0, featured: false },
   packages: { name: "", price: "₹0", gstText: "GST as applicable", features: {}, bestFor: "", description: "", featureList: [], highlighted: false, displayOrder: 0 },
   services: { name: "", description: "", detailedDescription: "", icon: "House", image: "", features: [], benefits: [], ctaText: "Discuss this service", displayOrder: 0, active: true },
-  team: { name: "", role: "", image: "/images/rakesh-profile.png", bio: "", displayOrder: 0 },
+  team: { name: "", role: "", image: "/images/rakesh-profile.png", bio: "", instagram: "", displayOrder: 0 },
+  interiors: { title: "", section: "Main Services", category: "Complete Home", image: "", alt: "", description: "", label: "", meta: "", displayOrder: 0, active: true },
   testimonials: { name: "", location: "Bengaluru", quote: "", rating: 5, status: "Published", displayOrder: 0 },
   gallery: { url: "" },
 };
@@ -132,7 +146,7 @@ const defaults: Record<string, Item> = {
 };
 
 const legacyModuleLabels: Record<string, string> = {
-  projects: "Project", packages: "Package", services: "Service", team: "Team member",
+  projects: "Project", packages: "Package", services: "Service", team: "Team member", interiors: "Interior card",
   testimonials: "Testimonial", gallery: "Gallery image", hero: "Hero content",
   settings: "Contact details", seo: "SEO settings",
 };
@@ -170,6 +184,7 @@ function normalizeDraft(module: string, draft: Item) {
 }
 function displayName(module: string, item: Item) {
   if (module === "projects") return valueOf(item.title);
+  if (module === "interiors") return valueOf(item.title);
   if (module === "whyUs") return valueOf(item.parameter);
   if (module === "gallery") return valueOf(item.url).split("/").pop() || "Gallery image";
   return valueOf(item.name) || moduleLabels[module];
@@ -240,9 +255,14 @@ export function AdminDashboard({ initial }: { initial: { site: Record<string, un
     router.push("/admin/login"); router.refresh();
   }
   async function uploadImage(file: File) {
+    const allowed = ["image/jpeg", "image/png", "image/webp"];
+    if (!allowed.includes(file.type)) throw new Error("Unsupported file type. Choose a JPG, JPEG, PNG, or WebP image.");
+    if (file.size > 6 * 1024 * 1024) throw new Error("Image is too large. Maximum size is 6 MB.");
     const form = new FormData(); form.append("file", file);
-    const response = await fetch("/api/admin/upload", { method: "POST", body: form });
-    const result = await response.json();
+    let response: Response;
+    try { response = await fetch("/api/admin/upload", { method: "POST", body: form }); }
+    catch { throw new Error("Upload could not reach the server. Check your connection and try again."); }
+    const result = await response.json().catch(() => ({ error: "The upload server returned an invalid response." }));
     if (!response.ok) throw new Error(result.error || "Image upload failed.");
     return String(result.path);
   }
@@ -291,10 +311,10 @@ export function AdminDashboard({ initial }: { initial: { site: Record<string, un
   }
   function quickAdd(module: string) { selectTab(module); openAdd(module); }
 
-  const currentItems: Item[] = ["projects", "packages", "whyUs", "services", "team", "testimonials", "gallery"].includes(tab) ? moduleItems(tab) : [];
+  const currentItems: Item[] = ["projects", "packages", "whyUs", "services", "team", "interiors", "testimonials", "gallery"].includes(tab) ? moduleItems(tab) : [];
   const visibleItems = currentItems.filter(item => {
     const matchesText = JSON.stringify(item).toLowerCase().includes(moduleSearch.toLowerCase());
-    const filterKey = tab === "projects" ? valueOf(item.category) : tab === "testimonials" ? valueOf(item.status || "Published") : ["services", "packages", "whyUs"].includes(tab) ? (item.active === false ? "Inactive" : "Active") : "All";
+    const filterKey = tab === "projects" ? valueOf(item.category) : tab === "testimonials" ? valueOf(item.status || "Published") : ["services", "packages", "whyUs", "interiors"].includes(tab) ? (item.active === false ? "Inactive" : "Active") : "All";
     return matchesText && (moduleFilter === "All" || filterKey === moduleFilter);
   });
 
@@ -321,7 +341,7 @@ export function AdminDashboard({ initial }: { initial: { site: Record<string, un
       <div className="admin-content">
         {tab === "overview" && <Dashboard initial={initial} counts={counts} leads={leads} quickAdd={quickAdd} viewLeads={() => selectTab("leads")} />}
         {tab === "leads" && <Enquiries leads={filteredLeads} allLeads={leads} search={search} status={status} source={source} setSearch={setSearch} setStatus={setStatus} setSource={setSource} view={lead => setLeadModal(leads.indexOf(lead))} remove={lead => setDeleteState({ module: "leads", index: leads.indexOf(lead), label: valueOf(lead.name) })} update={(lead, key, value) => markLeads(leads.map(item => item.id === lead.id ? { ...item, [key]: value } : item))} />}
-        {["projects", "packages", "whyUs", "services", "team", "testimonials", "gallery"].includes(tab) && <ModuleList module={tab} items={visibleItems} total={currentItems.length} search={moduleSearch} filter={moduleFilter} setSearch={setModuleSearch} setFilter={setModuleFilter} add={() => openAdd(tab)} edit={item => openEdit(tab, currentItems.indexOf(item))} remove={item => setDeleteState({ module: tab, index: currentItems.indexOf(item), label: displayName(tab, item) })} />}
+        {["projects", "packages", "whyUs", "services", "team", "interiors", "testimonials", "gallery"].includes(tab) && <ModuleList module={tab} items={visibleItems} total={currentItems.length} search={moduleSearch} filter={moduleFilter} setSearch={setModuleSearch} setFilter={setModuleFilter} add={() => openAdd(tab)} edit={item => openEdit(tab, currentItems.indexOf(item))} remove={item => setDeleteState({ module: tab, index: currentItems.indexOf(item), label: displayName(tab, item) })} />}
         {["hero", "settings", "seo"].includes(tab) && <SingletonModule module={tab} value={(site[tab] || {}) as Item} edit={() => openSingleton(tab)} />}
       </div>
     </section>
@@ -387,17 +407,18 @@ function Enquiries({ leads, allLeads, search, status, source, setSearch, setStat
 }
 
 function EditorModal({ state, setDraft, close, submit, upload, notify }: { state: NonNullable<ModalState>; setDraft: (draft: Item) => void; close: () => void; submit: (event: FormEvent) => void; upload: (file: File) => Promise<string>; notify: (type: "success" | "error", text: string) => void }) {
+  const [uploading, setUploading] = useState(false);
   return <div className="admin-modal-backdrop" onMouseDown={event => event.target === event.currentTarget && close()}><form className="admin-modal" onSubmit={submit}>
     <header><div><span>{state.index == null ? "Create new" : "Update existing"}</span><h2>{state.title}</h2></div><button type="button" aria-label="Close editor" onClick={close}><X /></button></header>
-    <div className="admin-modal-body"><div className="admin-form-grid">{schemas[state.module].map(field => <AdminField key={field.key} field={field} value={getNested(state.draft, field.key)} onChange={value => setDraft(setNested(state.draft, field.key, value))} onUpload={async file => { try { setDraft(setNested(state.draft, field.key, await upload(file))); notify("success", "Image uploaded."); } catch { notify("error", "Image upload failed."); } }} />)}</div></div>
-    <footer><button type="button" className="modal-cancel" onClick={close}>Cancel</button><button className="modal-save" type="submit"><Save />Save {moduleLabels[state.module]}</button></footer>
+    <div className="admin-modal-body"><div className="admin-form-grid">{schemas[state.module].map(field => <AdminField key={field.key} field={field} value={getNested(state.draft, field.key)} busy={uploading} onChange={value => setDraft(setNested(state.draft, field.key, value))} onUpload={async file => { if (uploading) return; setUploading(true); try { setDraft(setNested(state.draft, field.key, await upload(file))); notify("success", "Image uploaded. Save this item, then publish changes."); } catch (error) { notify("error", error instanceof Error ? error.message : "Image upload failed."); } finally { setUploading(false); } }} />)}</div></div>
+    <footer><button type="button" className="modal-cancel" disabled={uploading} onClick={close}>Cancel</button><button className="modal-save" type="submit" disabled={uploading}>{uploading ? <><span className="admin-upload-spinner" />Uploading image…</> : <><Save />Save {moduleLabels[state.module]}</>}</button></footer>
   </form></div>;
 }
 
-function AdminField({ field, value, onChange, onUpload }: { field: Field; value: unknown; onChange: (value: unknown) => void; onUpload: (file: File) => void }) {
+function AdminField({ field, value, busy, onChange, onUpload }: { field: Field; value: unknown; busy: boolean; onChange: (value: unknown) => void; onUpload: (file: File) => Promise<void> }) {
   const text = Array.isArray(value) ? value.join("\n") : valueOf(value);
   if (field.type === "checkbox") return <label className={`admin-field checkbox-field ${field.full ? "full" : ""}`}><input type="checkbox" checked={Boolean(value)} onChange={event => onChange(event.target.checked)} /><span><Check />{field.label}</span></label>;
-  if (field.type === "image") return <label className={`admin-field image-field ${field.full ? "full" : ""}`}><span>{field.label}</span>{text && <div className="admin-image-preview"><Image src={text} alt="" fill sizes="180px" /></div>}<input value={text} onChange={event => onChange(event.target.value)} placeholder="/images/example.png or uploaded URL" required={field.required} /><input type="file" accept="image/*" onChange={(event: ChangeEvent<HTMLInputElement>) => event.target.files?.[0] && onUpload(event.target.files[0])} /></label>;
+  if (field.type === "image") return <label className={`admin-field image-field ${field.full ? "full" : ""}`}><span>{field.label}</span>{text && <div className="admin-image-preview"><Image src={text} alt="Uploaded image preview" fill sizes="180px" /></div>}<input value={text} onChange={event => onChange(event.target.value)} placeholder="/images/example.png or permanent uploaded URL" required={field.required} /><input type="file" disabled={busy} accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" onChange={async (event: ChangeEvent<HTMLInputElement>) => { const file = event.target.files?.[0]; if (file) await onUpload(file); event.target.value = ""; }} /><small>{busy ? "Uploading securely…" : "JPG, JPEG, PNG or WebP · maximum 6 MB"}</small></label>;
   if (field.type === "textarea" || field.type === "list") return <label className={`admin-field ${field.full ? "full" : ""}`}><span>{field.label}{field.type === "list" && " (one per line)"}</span><textarea rows={field.type === "list" ? 4 : 3} value={text} required={field.required} onChange={event => onChange(event.target.value)} /></label>;
   if (field.type === "select") return <label className={`admin-field ${field.full ? "full" : ""}`}><span>{field.label}</span><select value={text} required={field.required} onChange={event => onChange(event.target.value)}>{field.options?.map(option => <option key={option}>{option}</option>)}</select></label>;
   return <label className={`admin-field ${field.full ? "full" : ""}`}><span>{field.label}</span><input type={field.type || "text"} value={text} required={field.required} onChange={event => onChange(event.target.value)} /></label>;

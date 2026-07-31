@@ -5,7 +5,7 @@ import { ArrowRight } from "lucide-react";
 import { InteriorLeadForm } from "@/components/InteriorLeadForm";
 import { InteriorsExperience } from "@/components/InteriorsExperience";
 import { Reveal } from "@/components/Reveal";
-import { interiorData } from "@/data/interiors";
+import { interiorData, type EditableInteriorCard } from "@/data/interiors";
 import { captchaFallbackEnabled, captchaProvider } from "@/lib/captcha";
 import { recaptchaEnabled } from "@/lib/security";
 import { getSiteData } from "@/lib/store";
@@ -27,6 +27,8 @@ export default async function InteriorsPage() {
   const social = (settings.social || {}) as Record<string, string>;
   const phone = String(settings.phone || "+91 99015 67272");
   const whatsapp = social.whatsapp || "https://wa.me/919901567272";
+  const interiorCards = Array.isArray(data.interiors) ? data.interiors as EditableInteriorCard[] : [];
+  const heroCard = interiorCards.find(card => card.section === "Hero" && card.active !== false);
   const faqSchema = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -60,7 +62,7 @@ export default async function InteriorsPage() {
     <>
       <section className="interiors-hero">
         <div className="interiors-hero-image">
-          <Image src={interiorData.hero.image} alt={interiorData.hero.alt} fill priority sizes="(max-width: 980px) 100vw, 56vw" />
+          <Image src={heroCard?.image || interiorData.hero.image} alt={heroCard?.alt || interiorData.hero.alt} fill priority sizes="(max-width: 980px) 100vw, 56vw" />
           <div className="interiors-hero-overlay" />
         </div>
         <div className="interiors-hero-content blueprint">
@@ -78,7 +80,7 @@ export default async function InteriorsPage() {
           <InteriorLeadForm captchaFallback={captchaFallbackEnabled()} captchaProvider={captchaProvider() === "text" ? "text" : "google"} recaptcha={recaptchaEnabled()} />
         </Reveal>
       </section>
-      <InteriorsExperience phone={phone} whatsapp={whatsapp} />
+      <InteriorsExperience phone={phone} whatsapp={whatsapp} interiorCards={interiorCards} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
     </>
