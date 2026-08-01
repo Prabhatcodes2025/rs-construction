@@ -71,8 +71,8 @@ export default async function InteriorsPage() {
             <h1>{interiorData.hero.title}</h1>
             <p>{interiorData.hero.description}</p>
             <div className="hero-actions">
-              <a className="button primary" href="#interior-consultation">Book a Free Design Consultation <ArrowRight /></a>
-              <Link className="button dark" href="#interior-portfolio">Explore Interior Designs</Link>
+              <a className="button primary" href="#interior-consultation"><span className="button-content">Book a Free Design Consultation <ArrowRight /></span></a>
+              <Link className="button dark" href="#interior-portfolio"><span className="button-content">Explore Interior Designs</span></Link>
             </div>
           </Reveal>
         </div>
@@ -80,7 +80,7 @@ export default async function InteriorsPage() {
           <InteriorLeadForm captchaFallback={captchaFallbackEnabled()} captchaProvider={captchaProvider() === "text" ? "text" : "google"} recaptcha={recaptchaEnabled()} />
         </Reveal>
       </section>
-      <InteriorsExperience phone={phone} whatsapp={whatsapp} interiorCards={interiorCards} />
+      <InteriorsExperience phone={phone} whatsapp={whatsapp} interiorCards={interiorCards} captchaFallback={captchaFallbackEnabled()} captchaProvider={captchaProvider() === "text" ? "text" : "google"} recaptcha={recaptchaEnabled()} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
     </>

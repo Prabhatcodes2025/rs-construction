@@ -1,7 +1,7 @@
 /* RS Construction premium visual system */
 :root{
   --orange:#f97316;
-  --orange-deep:#df5d08;
+  --orange-deep:#b54708;
   --navy:#0f172a;
   --navy-deep:#08111f;
   --ink:#111827;
@@ -31,7 +31,7 @@ p{font-size:15px;line-height:1.8}
 .eyebrow{position:relative;padding-left:42px;letter-spacing:.18em}
 .eyebrow:before{content:"";position:absolute;left:0;top:50%;width:28px;height:2px;background:currentColor}
 .button{border-radius:4px;min-height:54px;padding:0 25px;box-shadow:0 8px 20px transparent}
-.button.primary{background:linear-gradient(135deg,#ff812d,var(--orange-deep));box-shadow:0 14px 28px rgba(249,115,22,.24)}
+.button.primary{background:linear-gradient(135deg,#ff812d,var(--orange));box-shadow:0 14px 28px rgba(249,115,22,.24)}
 .button.primary:hover{box-shadow:0 18px 36px rgba(249,115,22,.34)}
 .button.dark{background:linear-gradient(135deg,#17243a,var(--navy-deep))}
 .button.outline{border-color:#cbd5e1}
@@ -47,7 +47,7 @@ p{font-size:15px;line-height:1.8}
 .nav-links>a:not(.nav-cta):not(.nav-whatsapp):after{content:"";position:absolute;left:0;right:100%;bottom:24px;height:2px;background:var(--orange);transition:.25s}
 .nav-links>a:not(.nav-cta):not(.nav-whatsapp):hover:after{right:0}
 .nav-whatsapp{color:#128c4b!important;display:flex;align-items:center;gap:7px;font-size:12px!important;font-weight:850!important}
-.nav-cta{height:46px;border-radius:3px;background:linear-gradient(135deg,var(--orange),var(--orange-deep));box-shadow:0 10px 25px rgba(249,115,22,.22)}
+.nav-cta{height:46px;border-radius:3px;background:linear-gradient(135deg,#fb923c,var(--orange));color:var(--navy);box-shadow:0 10px 25px rgba(249,115,22,.22)}
 
 /* Split hero inspired by the supplied brand banner */
 .hero{height:calc(100vh - 88px);min-height:720px;display:grid;grid-template-columns:minmax(0,.84fr) minmax(620px,1.16fr);align-items:stretch;background:#fff;isolation:isolate}
@@ -349,8 +349,10 @@ p{font-size:15px;line-height:1.8}
   transition:transform .3s cubic-bezier(.22,1,.36,1),box-shadow .3s ease,background-color .3s ease,color .3s ease,border-color .3s ease;
   will-change:transform;
 }
-.button{position:relative;overflow:hidden}
-.button:before{content:"";position:absolute;inset:-2px;transform:translateX(-110%) skewX(-18deg);width:55%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.36),transparent);transition:transform .65s ease}
+.button{position:relative;overflow:hidden;isolation:isolate}
+.button:before{content:"";position:absolute;z-index:0;inset:-2px;transform:translateX(-110%) skewX(-18deg);width:55%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.36),transparent);transition:transform .65s ease;pointer-events:none}
+.button-content,.button>svg{position:relative;z-index:1}
+.button-content{display:inline-flex;align-items:center;justify-content:center;gap:10px}
 .button:hover:before{transform:translateX(240%) skewX(-18deg)}
 .button:hover,.nav-cta:hover{box-shadow:0 18px 38px rgba(249,115,22,.3)}
 .nav-whatsapp:hover{color:#fff!important;background:#18a957;padding:12px 15px;border-radius:4px;box-shadow:0 12px 28px rgba(24,169,87,.25)}
@@ -626,7 +628,7 @@ p{font-size:15px;line-height:1.8}
 .contact-details>a:hover{padding-left:8px;color:#fff}.contact-details .map-placeholder{display:flex;margin-top:25px;border:1px solid rgba(249,115,22,.5);background:linear-gradient(145deg,#111f31,#07111f)}
 
 /* Balanced mobile header */
-.mobile-touch-cta{display:none;padding:10px 12px;border-radius:7px;background:var(--orange);color:#fff!important;font-size:9px!important;text-transform:uppercase;letter-spacing:.07em;font-weight:900;white-space:nowrap}
+.mobile-touch-cta{display:none;padding:10px 12px;border-radius:7px;background:var(--orange);color:var(--navy)!important;font-size:9px!important;text-transform:uppercase;letter-spacing:.07em;font-weight:900;white-space:nowrap}
 @media(max-width:1100px){.mobile-touch-cta{display:inline-flex;margin-left:auto}.mobile-quick-actions{display:none!important}}
 
 /* Admin application */

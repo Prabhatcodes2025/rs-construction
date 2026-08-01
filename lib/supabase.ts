@@ -1,10 +1,11 @@
 import type { Lead } from "./store";
+import { supabaseServerHeaders } from "./supabase-headers";
 
 const siteSettingsKey = "site_data";
 
 function config() {
   return {
-    serviceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY?.trim(),
+    serviceRoleKey: (process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY)?.trim(),
     url: process.env.NEXT_PUBLIC_SUPABASE_URL?.trim()?.replace(/\/$/, ""),
   };
 }
@@ -19,12 +20,7 @@ async function request(path: string, init: RequestInit = {}) {
   if (!current.url || !current.serviceRoleKey) throw new Error("Database not connected");
   const response = await fetch(`${current.url}/rest/v1/${path}`, {
     ...init,
-    headers: {
-      apikey: current.serviceRoleKey,
-      Authorization: `Bearer ${current.serviceRoleKey}`,
-      "content-type": "application/json",
-      ...(init.headers || {}),
-    },
+    headers: { ...supabaseServerHeaders(current.serviceRoleKey), ...(init.headers || {}) },
     cache: "no-store",
   });
   if (!response.ok) throw new Error(await response.text().catch(() => "Supabase request failed"));

@@ -1,6 +1,7 @@
 import { del, put } from "@vercel/blob";
 import { promises as fs } from "fs";
 import path from "path";
+import { supabaseServerHeaders } from "./supabase-headers";
 
 export const MAX_IMAGE_BYTES = 6 * 1024 * 1024;
 export const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"] as const;
@@ -9,7 +10,7 @@ const mediaBucket = () => process.env.SUPABASE_MEDIA_BUCKET?.trim() || "site-med
 const hasBlob = () => Boolean(process.env.BLOB_READ_WRITE_TOKEN || (process.env.BLOB_STORE_ID && process.env.VERCEL_OIDC_TOKEN));
 const supabaseConfig = () => ({
   url: process.env.NEXT_PUBLIC_SUPABASE_URL?.trim().replace(/\/$/, ""),
-  key: process.env.SUPABASE_SERVICE_ROLE_KEY?.trim(),
+  key: (process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY)?.trim(),
 });
 
 export type StoredMedia = { path: string; provider: "supabase" | "vercel-blob" | "local" };
@@ -19,15 +20,27 @@ function encodedObjectPath(objectPath: string) {
 }
 
 function supabaseHeaders(key: string, contentType = "application/json") {
-  return { apikey: key, Authorization: `Bearer ${key}`, "content-type": contentType };
+  return supabaseServerHeaders(key, contentType);
 }
+
+let bucketReady: Promise<void> | undefined;
 
 async function ensureSupabaseBucket(url: string, key: string) {
   const bucket = mediaBucket();
   const check = await fetch(`${url}/storage/v1/bucket/${encodeURIComponent(bucket)}`, {
     headers: supabaseHeaders(key), cache: "no-store",
   });
-  if (check.ok) return;
+  if (check.ok) {
+    const current = await check.json().catch(() => null) as { public?: boolean } | null;
+    if (current?.public !== false) return;
+    const update = await fetch(`${url}/storage/v1/bucket/${encodeURIComponent(bucket)}`, {
+      method: "PUT",
+      headers: supabaseHeaders(key),
+      body: JSON.stringify({ public: true, file_size_limit: MAX_IMAGE_BYTES, allowed_mime_types: [...ALLOWED_IMAGE_TYPES] }),
+    });
+    if (!update.ok) throw new Error(`Unable to make the Supabase media bucket public (${update.status}).`);
+    return;
+  }
   if (check.status !== 404) throw new Error(`Unable to access the Supabase media bucket (${check.status}).`);
   const create = await fetch(`${url}/storage/v1/bucket`, {
     method: "POST",
@@ -57,7 +70,11 @@ export async function storeImage(bytes: Uint8Array, objectPath: string, contentT
   const body = Buffer.from(bytes);
   const supabase = supabaseConfig();
   if (supabase.url && supabase.key) {
-    await ensureSupabaseBucket(supabase.url, supabase.key);
+    if (!bucketReady) bucketReady = ensureSupabaseBucket(supabase.url, supabase.key).catch(error => {
+      bucketReady = undefined;
+      throw error;
+    });
+    await bucketReady;
     const bucket = mediaBucket();
     const upload = await fetch(`${supabase.url}/storage/v1/object/${encodeURIComponent(bucket)}/${encodedObjectPath(objectPath)}`, {
       method: "POST",

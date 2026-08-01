@@ -37,7 +37,7 @@ const requiredTeam = [{
 export type Lead = {
   id: string; createdAt: string; source: string; status: "New" | "Contacted" | "Converted" | "Closed";
   name: string; mobile: string; email?: string; location?: string; plotSize?: string;
-  service?: string; message?: string; notes?: string;
+  service?: string; message?: string; details?: Record<string, string>; notes?: string;
 };
 
 async function readJson<T>(file: string, fallback: T): Promise<T> {
